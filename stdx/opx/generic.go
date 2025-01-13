@@ -24,6 +24,50 @@ func Coalesce[T any](values ...*T) *T {
 	return nil
 }
 
+// Compare two slices x and y that is deep equals.
+func IsEqualSlice[T comparable](x, y []T) bool {
+	if x == nil && y == nil {
+		return true
+	}
+	if x == nil || y == nil {
+		return false
+	}
+	if len(x) != len(y) {
+		return false
+	}
+	for i := range x {
+		if x[i] != y[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// Check whether is slice is Nil nor zero in length.
+func IsEmptySlice[T any](slice []T) bool {
+	if slice == nil {
+		return true
+	}
+	return len(slice) == 0
+}
+
+// Check whether a string has zero length.
+func IsEmptyString(str string) bool {
+	return str == ""
+}
+
+// Check whether a string has zero length or contains only whitespace rune(s).
+func IsEmptyOrWhitespaceString(str string) bool {
+	if len(str) > 0 {
+		for _, c := range str {
+			if c != 0x0020 && c != 0x0009 {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 // Method version of ternary assignmet. If cond is true, returns x, otherwise returns y.
 func Ternary[T any](cond bool, x, y T) T {
 	if cond {
