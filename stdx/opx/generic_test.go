@@ -19,7 +19,7 @@ import (
 	"testing"
 )
 
-func TestAreEqualSlice(t *testing.T) {
+func TestAreEqualSlices(t *testing.T) {
 	tests := []struct {
 		group    string
 		x        []int
@@ -46,7 +46,7 @@ func TestAreEqualSlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
-			result := AreEqualSlice(tt.x, tt.y)
+			result := AreEqualSlices(tt.x, tt.y)
 			if result != tt.expected {
 				t.FailNow()
 			}
