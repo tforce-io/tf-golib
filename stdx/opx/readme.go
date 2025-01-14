@@ -15,5 +15,6 @@
 /*
 Package opx provides generics function to handle common pattern that are not
 provided by Go lang standard libraries.
+Added in v0.1.0
 */
 package opx

@@ -16,32 +16,46 @@ package stdx
 
 import (
 	"runtime"
-	"slices"
+
+	"github.com/tforce-io/tf-golib/stdx/opx"
 )
 
 var _LINUX_FAMILIES = []string{"linux", "freebsd", "netbsd", "openbsd", "aix", "illumos", "plan9", "solaris"}
 var _WEB_ASSEMBLY_FAMILIES = []string{"wasip1"}
 
+// Check whether current platform is Android.
+// Added in v0.2.0
 func IsAndroid() bool {
 	return runtime.GOOS == "android"
 }
 
+// Check whether current platform is iOS.
+// Added in v0.2.0
 func IsIos() bool {
 	return runtime.GOOS == "ios"
 }
 
+// Check whether current platform is Linux.
+// "linux", "freebsd", "netbsd", "openbsd", "aix", "illumos", "plan9", "solaris" are considered Linux.
+// Added in v0.2.0
 func IsLinux() bool {
-	return slices.Contains(_LINUX_FAMILIES, runtime.GOOS)
+	return opx.Contains(_LINUX_FAMILIES, runtime.GOOS)
 }
 
+// Check whether current platform is MacOSX.
+// Added in v0.2.0
 func IsMacintosh() bool {
 	return runtime.GOOS == "darwin"
 }
 
+// Check whether current platform is Web Assembly.
+// Added in v0.2.0
 func IsWebAssembly() bool {
-	return slices.Contains(_WEB_ASSEMBLY_FAMILIES, runtime.GOOS)
+	return opx.Contains(_WEB_ASSEMBLY_FAMILIES, runtime.GOOS)
 }
 
+// Check whether current platform is Windows.
+// Added in v0.2.0
 func IsWindows() bool {
 	return runtime.GOOS == "windows"
 }
