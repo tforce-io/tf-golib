@@ -14,7 +14,12 @@
 
 package strfmt
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/tforce-io/tf-golib/stdx"
+	"github.com/tforce-io/tf-golib/stdx/opx"
+)
 
 func TestNewFileName(t *testing.T) {
 	tests := []struct {
@@ -38,34 +43,52 @@ func TestNewFileName(t *testing.T) {
 }
 
 func TestNewFileNameFromStr(t *testing.T) {
-	tests := []struct {
+	type Test struct {
 		group    string
 		path     string
 		expected *FileName
-	}{
-		{"empty", "", &FileName{}},
-		{"root", "/", &FileName{}},
-		{"root", `\`, &FileName{}},
-		{"root", "//", &FileName{}},
-		{"root", `\\`, &FileName{}},
-		{"drive", `c:`, &FileName{}},
-		{"drive", `c:\`, &FileName{}},
-		{"drive", `c:::`, &FileName{Name: "::"}},
-		{"drive", `c:abc`, &FileName{Name: "abc"}},
-		{"trailing_slash", "/usr/local/tforce-io/tf-golib/", &FileName{Name: "tf-golib"}},
-		{"trailing_slash", "///usr/local/tforce-io/tf-golib/", &FileName{Name: "tf-golib"}},
-		{"name_only", "main", &FileName{Name: "main"}},
-		{"name_and_ext", "main.go", &FileName{Name: "main", Extension: ".go"}},
-		{"relative_path_and_filename", "tf-golib/main", &FileName{Name: "main"}},
-		{"relative_path_and_filename", "tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
-		{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main", &FileName{Name: "main"}},
-		{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
 	}
+
+	tests := opx.Ternary(stdx.IsWindows(),
+		[]Test{
+			{"empty", "", &FileName{}},
+			{"root", "/", &FileName{}},
+			{"root", `\`, &FileName{}},
+			{"root", "//", &FileName{}},
+			{"root", `\\`, &FileName{}},
+			{"drive", `c:`, &FileName{}},
+			{"drive", `c:\`, &FileName{}},
+			{"drive", `c:::`, &FileName{Name: "::"}},
+			{"drive", `c:abc`, &FileName{Name: "abc"}},
+			{"trailing_slash", "/usr/local/tforce-io/tf-golib/", &FileName{Name: "tf-golib"}},
+			{"trailing_slash", "///usr/local/tforce-io/tf-golib/", &FileName{Name: "tf-golib"}},
+			{"name_only", "main", &FileName{Name: "main"}},
+			{"name_and_ext", "main.go", &FileName{Name: "main", Extension: ".go"}},
+			{"relative_path_and_filename", "tf-golib/main", &FileName{Name: "main"}},
+			{"relative_path_and_filename", "tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
+			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main", &FileName{Name: "main"}},
+			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
+		},
+		[]Test{
+			{"empty", "", &FileName{}},
+			{"root", "/", &FileName{}},
+			{"root", `\`, &FileName{}},
+			{"root", "//", &FileName{}},
+			{"root", `\\`, &FileName{}},
+			{"trailing_slash", "/usr/local/tforce-io/tf-golib/", &FileName{Name: "tf-golib"}},
+			{"trailing_slash", "///usr/local/tforce-io/tf-golib/", &FileName{Name: "tf-golib"}},
+			{"name_only", "main", &FileName{Name: "main"}},
+			{"name_and_ext", "main.go", &FileName{Name: "main", Extension: ".go"}},
+			{"relative_path_and_filename", "tf-golib/main", &FileName{Name: "main"}},
+			{"relative_path_and_filename", "tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
+			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main", &FileName{Name: "main"}},
+			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
+		})
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
 			result := NewFileNameFromStr(tt.path)
 			if !AreEqualFileNames(result, tt.expected) {
-				t.FailNow()
+				t.Errorf("expected %v current %v", tt.expected, result)
 			}
 		})
 	}
@@ -94,7 +117,7 @@ func TestFileName_FullName(t *testing.T) {
 			fileName.Suffix = tt.suffix
 			fullName := fileName.FullName()
 			if fullName != tt.expected {
-				t.FailNow()
+				t.Errorf("expected %v current %v", tt.expected, fullName)
 			}
 		})
 	}

@@ -18,12 +18,16 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/tforce-io/tf-golib/stdx"
+	"github.com/tforce-io/tf-golib/stdx/opx"
 )
 
 var PATH_SEPARATOR = string(os.PathSeparator)
 
 // A FileName is struct contains name and extension of a file or folder.
 // Extension should have dot at the beginning.
+// Added in v0.2.0
 type FileName struct {
 	Prefix    string
 	Name      string
@@ -31,6 +35,8 @@ type FileName struct {
 	Extension string
 }
 
+// Create a new FileName from scratch
+// Added in v0.2.0
 func NewFileName(name, extension string) *FileName {
 	return &FileName{
 		Name:      name,
@@ -38,8 +44,11 @@ func NewFileName(name, extension string) *FileName {
 	}
 }
 
+// Parse path string to create a new FileName
+// Added in v0.2.0
 func NewFileNameFromStr(path string) *FileName {
-	base := filepath.Base(path)
+	nPath := NormalizePath(path)
+	base := filepath.Base(nPath)
 	if base == "." || base == PATH_SEPARATOR {
 		return &FileName{
 			Name:      "",
@@ -55,6 +64,7 @@ func NewFileNameFromStr(path string) *FileName {
 }
 
 // Make a deep copy of this Path.
+// Added in v0.2.0
 func (s *FileName) Clone() *FileName {
 	return &FileName{
 		Prefix:    s.Prefix,
@@ -65,10 +75,13 @@ func (s *FileName) Clone() *FileName {
 }
 
 // Returns full name represented by this FileName.
+// Added in v0.2.0
 func (s *FileName) FullName() string {
 	return s.Prefix + s.Name + s.Suffix + s.Extension
 }
 
+// Check whether two FileNames are equal.
+// Added in v0.2.0
 func AreEqualFileNames(x, y *FileName) bool {
 	if x == nil && y == nil {
 		return true
@@ -80,4 +93,17 @@ func AreEqualFileNames(x, y *FileName) bool {
 		x.Extension == y.Extension &&
 		x.Prefix == y.Prefix &&
 		x.Suffix == y.Suffix
+}
+
+// Clean path and make path consistent accross platforms. This function will perform:
+// - Replace all slashes to backslashes on Windows.
+// - Replace all backslashes to slashes on all UNIX-like OSes.
+// - Clean the path.
+// Added in v0.2.0
+func NormalizePath(path string) string {
+	nPath := opx.Ternary(stdx.IsWindows(),
+		strings.ReplaceAll(path, "/", "\\"),
+		strings.ReplaceAll(path, "\\", "/"),
+	)
+	return filepath.Clean(nPath)
 }
