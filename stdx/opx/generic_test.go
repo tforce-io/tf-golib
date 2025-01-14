@@ -19,6 +19,41 @@ import (
 	"testing"
 )
 
+func TestAreEqualSlice(t *testing.T) {
+	tests := []struct {
+		group    string
+		x        []int
+		y        []int
+		expected bool
+	}{
+		// all nils
+		{"all nils", nil, nil, true},
+		// one nils
+		{"one nil", []int{}, nil, false},
+		{"one nil", nil, []int{}, false},
+		// different length
+		{"different length", []int{1}, []int{1, 2}, false},
+		{"different length", []int{1}, []int{1, 2, 3}, false},
+		{"different length", []int{1, 2}, []int{1}, false},
+		{"different length", []int{1, 2}, []int{1, 2, 3}, false},
+		{"different length", []int{1, 2}, []int{1, 2, 3, 4}, false},
+		{"different length", []int{1, 2, 3, 4}, []int{1, 2, 3}, false},
+		// deep compare
+		{"deep compare", []int{}, []int{}, true},
+		{"deep compare", []int{1}, []int{1}, true},
+		{"deep compare", []int{1, 3, 5}, []int{1, 3, 5}, true},
+		{"deep compare", []int{5, 3, 1}, []int{1, 3, 5}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.group, func(t *testing.T) {
+			result := AreEqualSlice(tt.x, tt.y)
+			if result != tt.expected {
+				t.FailNow()
+			}
+		})
+	}
+}
+
 func TestCoalesce(t *testing.T) {
 	tests := []struct {
 		group    string
@@ -57,41 +92,6 @@ func TestCoalesce(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := Coalesce(tt.items...)
 			if result.Cmp(tt.expected) != 0 {
-				t.FailNow()
-			}
-		})
-	}
-}
-
-func TestIsEqualSlice(t *testing.T) {
-	tests := []struct {
-		group    string
-		x        []int
-		y        []int
-		expected bool
-	}{
-		// all nils
-		{"all nils", nil, nil, true},
-		// one nils
-		{"one nil", []int{}, nil, false},
-		{"one nil", nil, []int{}, false},
-		// different length
-		{"different length", []int{1}, []int{1, 2}, false},
-		{"different length", []int{1}, []int{1, 2, 3}, false},
-		{"different length", []int{1, 2}, []int{1}, false},
-		{"different length", []int{1, 2}, []int{1, 2, 3}, false},
-		{"different length", []int{1, 2}, []int{1, 2, 3, 4}, false},
-		{"different length", []int{1, 2, 3, 4}, []int{1, 2, 3}, false},
-		// deep compare
-		{"deep compare", []int{}, []int{}, true},
-		{"deep compare", []int{1}, []int{1}, true},
-		{"deep compare", []int{1, 3, 5}, []int{1, 3, 5}, true},
-		{"deep compare", []int{5, 3, 1}, []int{1, 3, 5}, false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.group, func(t *testing.T) {
-			result := IsEqualSlice(tt.x, tt.y)
-			if result != tt.expected {
 				t.FailNow()
 			}
 		})

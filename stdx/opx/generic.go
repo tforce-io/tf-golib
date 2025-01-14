@@ -14,18 +14,8 @@
 
 package opx
 
-// Returns the first non-nil value in a array. Only support pointers of the same type.
-func Coalesce[T any](values ...*T) *T {
-	for _, value := range values {
-		if value != nil {
-			return value
-		}
-	}
-	return nil
-}
-
-// Compare two slices x and y that is deep equals.
-func IsEqualSlice[T comparable](x, y []T) bool {
+// Compare two slices x and y of comparable types that is deep equals.
+func AreEqualSlice[S ~[]T, T comparable](x, y S) bool {
 	if x == nil && y == nil {
 		return true
 	}
@@ -43,8 +33,37 @@ func IsEqualSlice[T comparable](x, y []T) bool {
 	return true
 }
 
+// Compare two slices x and y of any type that is deep equals.
+func AreEqualSliceFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
+	if x == nil && y == nil {
+		return true
+	}
+	if x == nil || y == nil {
+		return false
+	}
+	if len(x) != len(y) {
+		return false
+	}
+	for i := range x {
+		if !equalFunc(x[i], y[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+// Returns the first non-nil value in a array. Only support pointers of the same type.
+func Coalesce[T any](values ...*T) *T {
+	for _, value := range values {
+		if value != nil {
+			return value
+		}
+	}
+	return nil
+}
+
 // Check whether is slice is Nil nor zero in length.
-func IsEmptySlice[T any](slice []T) bool {
+func IsEmptySlice[S ~[]T, T any](slice S) bool {
 	if slice == nil {
 		return true
 	}
