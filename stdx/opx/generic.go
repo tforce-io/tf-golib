@@ -16,7 +16,7 @@ package opx
 
 // Compare two slices x and y of comparable types that is deep equals.
 // Added in v0.2.0
-func AreEqualSlice[S ~[]T, T comparable](x, y S) bool {
+func AreEqualSlices[S ~[]T, T comparable](x, y S) bool {
 	if x == nil && y == nil {
 		return true
 	}
@@ -36,7 +36,7 @@ func AreEqualSlice[S ~[]T, T comparable](x, y S) bool {
 
 // Compare two slices x and y of any type that is deep equals.
 // Added in v0.2.0
-func AreEqualSliceFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
+func AreEqualSlicesFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
 	if x == nil && y == nil {
 		return true
 	}
