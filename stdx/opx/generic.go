@@ -15,6 +15,7 @@
 package opx
 
 // Compare two slices x and y of comparable types that is deep equals.
+// Added in v0.2.0
 func AreEqualSlice[S ~[]T, T comparable](x, y S) bool {
 	if x == nil && y == nil {
 		return true
@@ -34,6 +35,7 @@ func AreEqualSlice[S ~[]T, T comparable](x, y S) bool {
 }
 
 // Compare two slices x and y of any type that is deep equals.
+// Added in v0.2.0
 func AreEqualSliceFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
 	if x == nil && y == nil {
 		return true
@@ -53,6 +55,7 @@ func AreEqualSliceFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool 
 }
 
 // Returns the first non-nil value in a array. Only support pointers of the same type.
+// Added in v0.1.0
 func Coalesce[T any](values ...*T) *T {
 	for _, value := range values {
 		if value != nil {
@@ -63,6 +66,7 @@ func Coalesce[T any](values ...*T) *T {
 }
 
 // Check whether a value v is a member of slice s.
+// Added in v0.2.0
 func Contains[S ~[]T, T comparable](s S, v T) bool {
 	for i := range s {
 		if v == s[i] {
@@ -73,6 +77,7 @@ func Contains[S ~[]T, T comparable](s S, v T) bool {
 }
 
 // Check whether a value v is a member of slice s.
+// Added in v0.2.0
 func ContainsFunc[S ~[]T, T comparable](s S, v T, equalFunc func(x, y T) bool) bool {
 	for i := range s {
 		if equalFunc(v, s[i]) {
@@ -83,6 +88,7 @@ func ContainsFunc[S ~[]T, T comparable](s S, v T, equalFunc func(x, y T) bool) b
 }
 
 // Check whether is slice is Nil nor zero in length.
+// Added in v0.2.0
 func IsEmptySlice[S ~[]T, T any](slice S) bool {
 	if slice == nil {
 		return true
@@ -91,11 +97,13 @@ func IsEmptySlice[S ~[]T, T any](slice S) bool {
 }
 
 // Check whether a string has zero length.
+// Added in v0.2.0
 func IsEmptyString(str string) bool {
 	return str == ""
 }
 
 // Check whether a string has zero length or contains only whitespace rune(s).
+// Added in v0.2.0
 func IsEmptyOrWhitespaceString(str string) bool {
 	if len(str) > 0 {
 		for _, c := range str {
@@ -108,6 +116,7 @@ func IsEmptyOrWhitespaceString(str string) bool {
 }
 
 // Method version of ternary assignmet. If cond is true, returns x, otherwise returns y.
+// Added in v0.1.0
 func Ternary[T any](cond bool, x, y T) T {
 	if cond {
 		return x

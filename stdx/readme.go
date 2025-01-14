@@ -15,5 +15,6 @@
 /*
 Package stdx provides extended data types that are not provided by Go lang
 standard libraries.
+Added in v0.1.0
 */
 package stdx
