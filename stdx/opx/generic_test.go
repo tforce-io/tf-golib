@@ -30,14 +30,11 @@ func TestAreEqualSlices(t *testing.T) {
 		{"all nils", nil, nil, true},
 		// one nils
 		{"one nil", []int{}, nil, false},
-		{"one nil", nil, []int{}, false},
 		// different length
 		{"different length", []int{1}, []int{1, 2}, false},
 		{"different length", []int{1}, []int{1, 2, 3}, false},
-		{"different length", []int{1, 2}, []int{1}, false},
 		{"different length", []int{1, 2}, []int{1, 2, 3}, false},
 		{"different length", []int{1, 2}, []int{1, 2, 3, 4}, false},
-		{"different length", []int{1, 2, 3, 4}, []int{1, 2, 3}, false},
 		// deep compare
 		{"deep compare", []int{}, []int{}, true},
 		{"deep compare", []int{1}, []int{1}, true},
@@ -48,7 +45,11 @@ func TestAreEqualSlices(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := AreEqualSlices(tt.x, tt.y)
 			if result != tt.expected {
-				t.FailNow()
+				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.y)
+			}
+			result = AreEqualSlices(tt.y, tt.x)
+			if result != tt.expected {
+				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.y, tt.x)
 			}
 		})
 	}
@@ -92,7 +93,7 @@ func TestCoalesce(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := Coalesce(tt.items...)
 			if result.Cmp(tt.expected) != 0 {
-				t.FailNow()
+				t.Errorf("expected %v actual %v intermediate %v", tt.expected, result, tt.items)
 			}
 		})
 	}
@@ -114,7 +115,7 @@ func TestContains(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := Contains(tt.items, tt.value)
 			if result != tt.expected {
-				t.FailNow()
+				t.Errorf("expected %v actual %v intermediate %v %v", tt.expected, result, tt.items, tt.value)
 			}
 		})
 	}
@@ -140,7 +141,7 @@ func TestIsEmptySlice(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := IsEmptySlice(tt.slice)
 			if result != tt.expected {
-				t.FailNow()
+				t.Errorf("expected %v actual %v intermediate %v", tt.expected, result, tt.slice)
 			}
 		})
 	}
@@ -163,7 +164,7 @@ func TestIsEmptyString(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := IsEmptyString(tt.str)
 			if result != tt.expected {
-				t.FailNow()
+				t.Errorf("expected %v actual %v intermediate %v", tt.expected, result, tt.str)
 			}
 		})
 	}
@@ -203,7 +204,7 @@ func TestIsEmptyOrWhitespaceString(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := IsEmptyOrWhitespaceString(tt.str)
 			if result != tt.expected {
-				t.FailNow()
+				t.Errorf("expected %v actual %v intermediate %v", tt.expected, result, tt.str)
 			}
 		})
 	}
@@ -224,7 +225,7 @@ func TestTernary(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := Ternary(tt.cond, tt.x, tt.y)
 			if result != tt.expected {
-				t.FailNow()
+				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.y)
 			}
 		})
 	}

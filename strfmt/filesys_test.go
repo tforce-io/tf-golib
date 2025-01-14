@@ -17,7 +17,7 @@ package strfmt
 import (
 	"testing"
 
-	"github.com/tforce-io/tf-golib/stdx"
+	"github.com/tforce-io/tf-golib/stdx/envx"
 	"github.com/tforce-io/tf-golib/stdx/opx"
 )
 
@@ -49,7 +49,7 @@ func TestNewFileNameFromStr(t *testing.T) {
 		expected *FileName
 	}
 
-	tests := opx.Ternary(stdx.IsWindows(),
+	tests := opx.Ternary(envx.IsWindows(),
 		[]Test{
 			{"empty", "", &FileName{}},
 			{"root", "/", &FileName{}},
@@ -143,7 +143,7 @@ func TestAreEqualFileNames(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := AreEqualFileNames(tt.x, tt.y)
 			if result != tt.expected {
-				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.x)
+				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.y)
 			}
 			result = AreEqualFileNames(tt.y, tt.x)
 			if result != tt.expected {
@@ -160,7 +160,7 @@ func TestNewPath(t *testing.T) {
 		file     *FileName
 		expected *Path
 	}
-	tests := opx.Ternary(stdx.IsWindows(),
+	tests := opx.Ternary(envx.IsWindows(),
 		[]Test{
 			{"empty", []string{}, NewFileNameFromStr(""), &Path{}},
 			{"file_only", []string{}, NewFileNameFromStr("main"), &Path{Name: &FileName{Name: "main"}}},
@@ -193,7 +193,7 @@ func TestNewPathFromStr(t *testing.T) {
 		parents []string
 		name    string
 	}
-	tests := opx.Ternary(stdx.IsWindows(),
+	tests := opx.Ternary(envx.IsWindows(),
 		[]Test{
 			{"file_only", `main`, []string{}, "main"},
 			{"file_only", `main.go`, []string{}, "main.go"},
@@ -239,7 +239,7 @@ func TestPath_IsAbsolute(t *testing.T) {
 		file     *FileName
 		expected bool
 	}
-	tests := opx.Ternary(stdx.IsWindows(),
+	tests := opx.Ternary(envx.IsWindows(),
 		[]Test{
 			{"empty", []string{}, NewFileNameFromStr(""), false},
 			{"file_only", []string{}, NewFileNameFromStr("main"), false},
@@ -273,7 +273,7 @@ func TestPath_FullPath(t *testing.T) {
 		file     *FileName
 		expected string
 	}
-	tests := opx.Ternary(stdx.IsWindows(),
+	tests := opx.Ternary(envx.IsWindows(),
 		[]Test{
 			{"empty", []string{}, NewFileNameFromStr(""), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main"), "main"},
@@ -307,7 +307,7 @@ func TestPath_ParentPath(t *testing.T) {
 		file     *FileName
 		expected string
 	}
-	tests := opx.Ternary(stdx.IsWindows(),
+	tests := opx.Ternary(envx.IsWindows(),
 		[]Test{
 			{"empty", []string{}, NewFileNameFromStr(""), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main"), ""},
@@ -360,7 +360,7 @@ func TestAreEqualPaths(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := AreEqualPaths(tt.x, tt.y)
 			if result != tt.expected {
-				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.x)
+				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.y)
 			}
 			result = AreEqualPaths(tt.y, tt.x)
 			if result != tt.expected {
