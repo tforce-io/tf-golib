@@ -16,7 +16,8 @@ package stdx
 
 import (
 	"runtime"
-	"slices"
+
+	"github.com/tforce-io/tf-golib/stdx/opx"
 )
 
 var _LINUX_FAMILIES = []string{"linux", "freebsd", "netbsd", "openbsd", "aix", "illumos", "plan9", "solaris"}
@@ -31,7 +32,7 @@ func IsIos() bool {
 }
 
 func IsLinux() bool {
-	return slices.Contains(_LINUX_FAMILIES, runtime.GOOS)
+	return opx.Contains(_LINUX_FAMILIES, runtime.GOOS)
 }
 
 func IsMacintosh() bool {
@@ -39,7 +40,7 @@ func IsMacintosh() bool {
 }
 
 func IsWebAssembly() bool {
-	return slices.Contains(_WEB_ASSEMBLY_FAMILIES, runtime.GOOS)
+	return opx.Contains(_WEB_ASSEMBLY_FAMILIES, runtime.GOOS)
 }
 
 func IsWindows() bool {

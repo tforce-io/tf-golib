@@ -98,6 +98,28 @@ func TestCoalesce(t *testing.T) {
 	}
 }
 
+func TestContains(t *testing.T) {
+	tests := []struct {
+		group    string
+		items    []int
+		value    int
+		expected bool
+	}{
+		{"true", []int{3, 5, 7, 2, 4, 6}, 7, true},
+		{"true", []int{3, 5, 7, 2, 4, 6}, 4, true},
+		{"true", []int{}, 7, false},
+		{"true", []int{3, 5, 2, 4, 6}, 7, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.group, func(t *testing.T) {
+			result := Contains(tt.items, tt.value)
+			if result != tt.expected {
+				t.FailNow()
+			}
+		})
+	}
+}
+
 func TestIsEmptySlice(t *testing.T) {
 	tests := []struct {
 		group    string

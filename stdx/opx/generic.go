@@ -62,6 +62,26 @@ func Coalesce[T any](values ...*T) *T {
 	return nil
 }
 
+// Check whether a value v is a member of slice s.
+func Contains[S ~[]T, T comparable](s S, v T) bool {
+	for i := range s {
+		if v == s[i] {
+			return true
+		}
+	}
+	return false
+}
+
+// Check whether a value v is a member of slice s.
+func ContainsFunc[S ~[]T, T comparable](s S, v T, equalFunc func(x, y T) bool) bool {
+	for i := range s {
+		if equalFunc(v, s[i]) {
+			return true
+		}
+	}
+	return false
+}
+
 // Check whether is slice is Nil nor zero in length.
 func IsEmptySlice[S ~[]T, T any](slice S) bool {
 	if slice == nil {
