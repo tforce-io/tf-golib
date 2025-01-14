@@ -19,7 +19,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tforce-io/tf-golib/stdx"
+	"github.com/tforce-io/tf-golib/stdx/envx"
 	"github.com/tforce-io/tf-golib/stdx/opx"
 )
 
@@ -182,7 +182,7 @@ func AreEqualPaths(x, y *Path) bool {
 // - Clean the path.
 // Added in v0.2.0
 func NormalizePath(path string) string {
-	nPath := opx.Ternary(stdx.IsWindows(),
+	nPath := opx.Ternary(envx.IsWindows(),
 		strings.ReplaceAll(path, "/", "\\"),
 		strings.ReplaceAll(path, "\\", "/"),
 	)
