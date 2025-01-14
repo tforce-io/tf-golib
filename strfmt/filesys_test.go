@@ -143,7 +143,7 @@ func TestAreEqualFileNames(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := AreEqualFileNames(tt.x, tt.y)
 			if result != tt.expected {
-				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.x)
+				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.y)
 			}
 			result = AreEqualFileNames(tt.y, tt.x)
 			if result != tt.expected {
@@ -360,7 +360,7 @@ func TestAreEqualPaths(t *testing.T) {
 		t.Run(tt.group, func(t *testing.T) {
 			result := AreEqualPaths(tt.x, tt.y)
 			if result != tt.expected {
-				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.x)
+				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.y)
 			}
 			result = AreEqualPaths(tt.y, tt.x)
 			if result != tt.expected {
