@@ -95,9 +95,90 @@ func AreEqualFileNames(x, y *FileName) bool {
 		x.Suffix == y.Suffix
 }
 
+// A Path is a struct contains all smallest components of a path.
+// Added in v0.2.0
+type Path struct {
+	Parents []string
+	Name    *FileName
+}
+
+// Create a new Path from scratch
+// Added in v0.2.0
+func NewPath(dirs []string, name *FileName) *Path {
+	return &Path{
+		Parents: dirs,
+		Name:    name,
+	}
+}
+
+// Parse path string to create a new Path
+// Added in v0.2.0
+func NewPathFromStr(path string) *Path {
+	nPath := NormalizePath(path)
+	dir, file := filepath.Split(nPath)
+	dir = strings.TrimSuffix(dir, PATH_SEPARATOR)
+	dirs := opx.Ternary(opx.IsEmptyString(dir), []string{}, strings.Split(dir, PATH_SEPARATOR))
+	name := NewFileNameFromStr(file)
+	return &Path{
+		Parents: dirs,
+		Name:    name,
+	}
+}
+
+// Make a deep copy of this Path.
+// Added in v0.2.0
+func (s *Path) Clone() *Path {
+	directories := make([]string, len(s.Parents))
+	_ = copy(s.Parents, directories)
+	name := s.Name.Clone()
+	return &Path{
+		Parents: directories,
+		Name:    name,
+	}
+}
+
+// Check a Path is whether asbsolute path. Using the same rule as
+// filepath.IsAbs
+// Added in v0.2.0
+func (s *Path) IsAbsolute() bool {
+	if opx.IsEmptySlice(s.Parents) {
+		return false
+	}
+	fullPath := s.FullPath()
+	return filepath.IsAbs(fullPath)
+}
+
+// Returns full path represented by this Path.
+// Added in v0.2.0
+func (s *Path) FullPath() string {
+	if opx.IsEmptySlice(s.Parents) {
+		return s.Name.FullName()
+	}
+	return s.ParentPath() + PATH_SEPARATOR + s.Name.FullName()
+}
+
+// Returns parent path represented by this Path.
+// Added in v0.2.0
+func (s *Path) ParentPath() string {
+	return opx.Ternary(opx.IsEmptySlice(s.Parents), "", strings.Join(s.Parents, PATH_SEPARATOR))
+}
+
+// Check whether two Paths are equal.
+// Added in v0.2.0
+func AreEqualPaths(x, y *Path) bool {
+	if x == nil && y == nil {
+		return true
+	}
+	if x == nil || y == nil {
+		return false
+	}
+	return opx.AreEqualSlices(x.Parents, y.Parents) &&
+		AreEqualFileNames(x.Name, y.Name)
+}
+
 // Clean path and make path consistent accross platforms. This function will perform:
-// - Replace all slashes to backslashes on Windows.
-// - Replace all backslashes to slashes on all UNIX-like OSes.
+// - Replace all slashes to backslashes if run on Windows.
+// - Replace all backslashes to slashes if run on all UNIX-like OSes.
 // - Clean the path.
 // Added in v0.2.0
 func NormalizePath(path string) string {
