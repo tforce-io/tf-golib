@@ -168,3 +168,64 @@ func Uint64r(i, n uint64) uint64 {
 	}
 	return i + Uint64n(n-i)
 }
+
+// Float32 returns, as a float32, a pseudo-random number in the half-open interval [0.0,1.0)
+// from the default [Source].
+// Available since v0.3.0
+func Float32() float32 {
+	return rand.Float32()
+}
+
+// Float64 returns, as a float64, a pseudo-random number in the half-open interval [0.0,1.0)
+// from the default [Source].
+// Available since v0.3.0
+func Float64() float64 {
+	return rand.Float64()
+}
+
+// NormFloat64 returns a normally distributed float64 in the range
+// [-[math.MaxFloat64], +[math.MaxFloat64]] with
+// standard normal distribution (mean = 0, stddev = 1)
+// from the default [Source].
+// To produce a different normal distribution, callers can
+// adjust the output using:
+//
+//	sample = NormFloat64() * desiredStdDev + desiredMean
+// Available since v0.3.0
+func NormFloat64() float64 {
+	return rand.NormFloat64()
+}
+
+// NormFloat64n returns a float64 in the range
+// [-[math.MaxFloat64], +[math.MaxFloat64]] with custom distribution (stddev, mean)
+// from the default [Source].
+// The custom distribution method is taken from Golang std library:
+//
+//  result = NormFloat64() * stddev + mean
+// Available since v0.3.0
+func NormFloat64n(stddev, mean float64) float64 {
+	return rand.NormFloat64()*stddev + mean
+}
+
+// ExpFloat64 returns an exponentially distributed float64 in the range
+// (0, +[math.MaxFloat64]] with an exponential distribution whose rate parameter
+// (lambda) is 1 and whose mean is 1/lambda (1) from the default [Source].
+// To produce a distribution with a different rate parameter,
+// callers can adjust the output using:
+//
+//	sample = ExpFloat64() / desiredRateParameter
+// Available since v0.3.0
+func ExpFloat64() float64 {
+	return rand.ExpFloat64()
+}
+
+// ExpFloat64 returns an exponentially distributed float64 in the range
+// (0, +[math.MaxFloat64]] with an exponential distribution with custom
+// rate parameter lambda from the default [Source].
+// The custom distribution method is taken from Golang std library:
+//
+//	result = ExpFloat64() / lamda
+// Available since v0.3.0
+func ExpFloat64n(lamda float64) float64 {
+	return rand.ExpFloat64() / lamda
+}
