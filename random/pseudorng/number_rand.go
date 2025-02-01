@@ -92,3 +92,79 @@ func Int63r(i, n int64) int64 {
 	}
 	return i + rand.Int63n(n-i)
 }
+
+// Uint32 returns a pseudo-random 32-bit value as a uint32
+// from the default [Source].
+// Available since v0.3.0
+func Uint32() uint32 {
+	return rand.Uint32()
+}
+
+// Uint32n returns, as an uint32, a pseudo-random number in the half-open interval [0,n)
+// from the default [Source].
+// It panics if n <= 0.
+// Available since v0.3.0
+func Uint32n(n uint32) uint32 {
+	if n <= 0 {
+		panic("invalid argument to Uint32n")
+	}
+	uint32Max := ^uint32(0)
+	if n&(n-1) == 0 { // n is power of two, can mask
+		return rand.Uint32() & (n - 1)
+	}
+	max := uint32Max - uint32Max%n
+	v := rand.Uint32()
+	for v > max {
+		v = rand.Uint32()
+	}
+	return v % n
+}
+
+// Uint32r returns, as an uint32, a pseudo-random number in the half-open interval [i,n)
+// from the default [Source].
+// It panics if n <= 0 or n <= i.
+// Available since v0.3.0
+func Uint32r(i, n uint32) uint32 {
+	if n <= 0 || n <= i {
+		panic("invalid argument to Uint32r")
+	}
+	return i + Uint32n(n-i)
+}
+
+// Uint64 returns a pseudo-random 64-bit value as a uint64
+// from the default [Source].
+// Available since v0.3.0
+func Uint64() uint64 {
+	return rand.Uint64()
+}
+
+// Uint64n returns, as an uint64, a pseudo-random number in the half-open interval [0,n)
+// from the default [Source].
+// It panics if n <= 0.
+// Available since v0.3.0
+func Uint64n(n uint64) uint64 {
+	if n <= 0 {
+		panic("invalid argument to Uint64n")
+	}
+	uint64Max := ^uint64(0)
+	if n&(n-1) == 0 { // n is power of two, can mask
+		return rand.Uint64() & (n - 1)
+	}
+	max := uint64Max - uint64Max%n
+	v := rand.Uint64()
+	for v > max {
+		v = rand.Uint64()
+	}
+	return v % n
+}
+
+// Uint64r returns, as an uint64, a pseudo-random number in the half-open interval [i,n)
+// from the default [Source].
+// It panics if n <= 0 or n <= i.
+// Available since v0.3.0
+func Uint64r(i, n uint64) uint64 {
+	if n <= 0 || n <= i {
+		panic("invalid argument to Uint64r")
+	}
+	return i + Uint64n(n-i)
+}
