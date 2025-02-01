@@ -70,5 +70,8 @@ func String(n uint, charset []rune) string {
 // See https://stackoverflow.com/a/2745086 for more information.
 // Available since v0.3.0
 func ceilUint(x, y uint) uint {
+	if x == 0 {
+		return 0
+	}
 	return 1 + ((x - 1) / y)
 }
