@@ -140,3 +140,77 @@ func Int63r(i, n int64) int64 {
 	}
 	return i + Int63n(n-i)
 }
+
+// Uint32 returns, as an uint32, a uniform integer
+// from the default [Reader].
+// Available since v0.3.0
+func Uint32() uint32 {
+	v, err := rand.Int(rand.Reader, new(big.Int).SetUint64(uint64(uint32Max)))
+	if err != nil {
+		panic(err)
+	}
+	return uint32(v.Uint64())
+}
+
+// Uint32n returns, as an uint32, a uniform number in the half-open interval [0,n)
+// from the default [Reader].
+// It panics if n <= 0.
+// Available since v0.3.0
+func Uint32n(n uint32) uint32 {
+	if n <= 0 {
+		panic("invalid argument to Uint32n")
+	}
+	v, err := rand.Int(rand.Reader, new(big.Int).SetUint64(uint64(n)))
+	if err != nil {
+		panic(err)
+	}
+	return uint32(v.Uint64())
+}
+
+// Uint32r returns, as an uint32, a uniform number in the half-open interval [i,n)
+// from the default [Reader].
+// It panics if n <= 0 or n <= i.
+// Available since v0.3.0
+func Uint32r(i, n uint32) uint32 {
+	if n <= 0 || n <= i {
+		panic("invalid argument to Uint32r")
+	}
+	return i + Uint32n(n-i)
+}
+
+// Uint64 returns, as an uint64, a uniform integer
+// from the default [Reader].
+// Available since v0.3.0
+func Uint64() uint64 {
+	v, err := rand.Int(rand.Reader, new(big.Int).SetUint64(uint64Max))
+	if err != nil {
+		panic(err)
+	}
+	return v.Uint64()
+}
+
+// Uint64n returns, as an uint64, a uniform number in the half-open interval [0,n)
+// from the default [Reader].
+// It panics if n <= 0.
+// Available since v0.3.0
+func Uint64n(n uint64) uint64 {
+	if n <= 0 {
+		panic("invalid argument to Uint64n")
+	}
+	v, err := rand.Int(rand.Reader, new(big.Int).SetUint64(n))
+	if err != nil {
+		panic(err)
+	}
+	return v.Uint64()
+}
+
+// Uint64r returns, as an uint64, a uniform number in the half-open interval [i,n)
+// from the default [Reader].
+// It panics if n <= 0 or n <= i.
+// Available since v0.3.0
+func Uint64r(i, n uint64) uint64 {
+	if n <= 0 || n <= i {
+		panic("invalid argument to Uint64r")
+	}
+	return i + Uint64n(n-i)
+}
