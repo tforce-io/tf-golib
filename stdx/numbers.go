@@ -16,8 +16,6 @@ package stdx
 
 import (
 	"math/big"
-
-	"github.com/shopspring/decimal"
 )
 
 // A Uint256 is wrapped *big.Int to intergrate with system that use large number and provide fluent apis for type casting.
@@ -30,12 +28,6 @@ type Uint256 struct {
 // Added in v0.1.0
 func (s *Uint256) BigInt() *big.Int {
 	return s.value
-}
-
-// Cast Uint256 to Decimal.
-// Added in v0.1.0
-func (s *Uint256) Decimal() decimal.Decimal {
-	return decimal.NewFromBigInt(s.value, 0)
 }
 
 // Cast Uint256 to uint64. This may cause data loss when the value is larger than 18446744073709551615.
