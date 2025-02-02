@@ -21,6 +21,7 @@ import (
 
 	"github.com/tforce-io/tf-golib/multiarch"
 	"github.com/tforce-io/tf-golib/opx"
+	"github.com/tforce-io/tf-golib/stdx/stringxt"
 )
 
 var PATH_SEPARATOR = string(os.PathSeparator)
@@ -117,7 +118,7 @@ func NewPathFromStr(path string) *Path {
 	nPath := NormalizePath(path)
 	dir, file := filepath.Split(nPath)
 	dir = strings.TrimSuffix(dir, PATH_SEPARATOR)
-	dirs := opx.Ternary(opx.IsEmptyString(dir), []string{}, strings.Split(dir, PATH_SEPARATOR))
+	dirs := opx.Ternary(stringxt.IsEmpty(dir), []string{}, strings.Split(dir, PATH_SEPARATOR))
 	name := NewFileNameFromStr(file)
 	return &Path{
 		Parents: dirs,
