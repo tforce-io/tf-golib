@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /*
-Package strfmt provides common structs for popular structured string in computing
-such as URL, file path, connection string,...
-Available since v0.2.0
+Package slicext implements helper functions specialized for slice
+that are not yet provided by Go lang standard libraries.
+Available since v0.3.0
 */
-package strfmt
+package slicext

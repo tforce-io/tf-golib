@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package opx
+package slicext
 
 // Compare two slices x and y of comparable types that is deep equals.
-// Added in v0.2.0
-func AreEqualSlices[S ~[]T, T comparable](x, y S) bool {
+// Available since v0.3.0
+func AreEqual[S ~[]T, T comparable](x, y S) bool {
 	if x == nil && y == nil {
 		return true
 	}
@@ -35,8 +35,8 @@ func AreEqualSlices[S ~[]T, T comparable](x, y S) bool {
 }
 
 // Compare two slices x and y of any type that is deep equals.
-// Added in v0.2.0
-func AreEqualSlicesFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
+// Available since v0.3.0
+func AreEqualFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
 	if x == nil && y == nil {
 		return true
 	}
@@ -54,19 +54,8 @@ func AreEqualSlicesFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool
 	return true
 }
 
-// Returns the first non-nil value in a array. Only support pointers of the same type.
-// Added in v0.1.0
-func Coalesce[T any](values ...*T) *T {
-	for _, value := range values {
-		if value != nil {
-			return value
-		}
-	}
-	return nil
-}
-
 // Check whether a value v is a member of slice s.
-// Added in v0.2.0
+// Available since v0.3.0
 func Contains[S ~[]T, T comparable](s S, v T) bool {
 	for i := range s {
 		if v == s[i] {
@@ -77,7 +66,7 @@ func Contains[S ~[]T, T comparable](s S, v T) bool {
 }
 
 // Check whether a value v is a member of slice s.
-// Added in v0.2.0
+// Available since v0.3.0
 func ContainsFunc[S ~[]T, T comparable](s S, v T, equalFunc func(x, y T) bool) bool {
 	for i := range s {
 		if equalFunc(v, s[i]) {
@@ -88,38 +77,10 @@ func ContainsFunc[S ~[]T, T comparable](s S, v T, equalFunc func(x, y T) bool) b
 }
 
 // Check whether is slice is Nil nor zero in length.
-// Added in v0.2.0
-func IsEmptySlice[S ~[]T, T any](slice S) bool {
+// Available since v0.3.0
+func IsEmpty[S ~[]T, T any](slice S) bool {
 	if slice == nil {
 		return true
 	}
 	return len(slice) == 0
-}
-
-// Check whether a string has zero length.
-// Added in v0.2.0
-func IsEmptyString(str string) bool {
-	return str == ""
-}
-
-// Check whether a string has zero length or contains only whitespace rune(s).
-// Added in v0.2.0
-func IsEmptyOrWhitespaceString(str string) bool {
-	if len(str) > 0 {
-		for _, c := range str {
-			if c != 0x0020 && c != 0x0009 {
-				return false
-			}
-		}
-	}
-	return true
-}
-
-// Method version of ternary assignmet. If cond is true, returns x, otherwise returns y.
-// Added in v0.1.0
-func Ternary[T any](cond bool, x, y T) T {
-	if cond {
-		return x
-	}
-	return y
 }

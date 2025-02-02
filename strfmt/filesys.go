@@ -19,15 +19,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tforce-io/tf-golib/stdx/envx"
-	"github.com/tforce-io/tf-golib/stdx/opx"
+	"github.com/tforce-io/tf-golib/multiarch"
+	"github.com/tforce-io/tf-golib/stdx/stringxt"
 )
 
 var PATH_SEPARATOR = string(os.PathSeparator)
 
 // A FileName is struct contains name and extension of a file or folder.
 // Extension should have dot at the beginning.
-// Added in v0.2.0
+// Available since v0.2.0
 type FileName struct {
 	Prefix    string
 	Name      string
@@ -36,7 +36,7 @@ type FileName struct {
 }
 
 // Create a new FileName from scratch
-// Added in v0.2.0
+// Available since v0.2.0
 func NewFileName(name, extension string) *FileName {
 	return &FileName{
 		Name:      name,
@@ -45,7 +45,7 @@ func NewFileName(name, extension string) *FileName {
 }
 
 // Parse path string to create a new FileName
-// Added in v0.2.0
+// Available since v0.2.0
 func NewFileNameFromStr(path string) *FileName {
 	nPath := NormalizePath(path)
 	base := filepath.Base(nPath)
@@ -64,7 +64,7 @@ func NewFileNameFromStr(path string) *FileName {
 }
 
 // Make a deep copy of this Path.
-// Added in v0.2.0
+// Available since v0.2.0
 func (s *FileName) Clone() *FileName {
 	return &FileName{
 		Prefix:    s.Prefix,
@@ -75,13 +75,13 @@ func (s *FileName) Clone() *FileName {
 }
 
 // Returns full name represented by this FileName.
-// Added in v0.2.0
+// Available since v0.2.0
 func (s *FileName) FullName() string {
 	return s.Prefix + s.Name + s.Suffix + s.Extension
 }
 
 // Check whether two FileNames are equal.
-// Added in v0.2.0
+// Available since v0.2.0
 func AreEqualFileNames(x, y *FileName) bool {
 	if x == nil && y == nil {
 		return true
@@ -96,14 +96,14 @@ func AreEqualFileNames(x, y *FileName) bool {
 }
 
 // A Path is a struct contains all smallest components of a path.
-// Added in v0.2.0
+// Available since v0.2.0
 type Path struct {
 	Parents []string
 	Name    *FileName
 }
 
 // Create a new Path from scratch
-// Added in v0.2.0
+// Available since v0.2.0
 func NewPath(dirs []string, name *FileName) *Path {
 	return &Path{
 		Parents: dirs,
@@ -112,12 +112,12 @@ func NewPath(dirs []string, name *FileName) *Path {
 }
 
 // Parse path string to create a new Path
-// Added in v0.2.0
+// Available since v0.2.0
 func NewPathFromStr(path string) *Path {
 	nPath := NormalizePath(path)
 	dir, file := filepath.Split(nPath)
 	dir = strings.TrimSuffix(dir, PATH_SEPARATOR)
-	dirs := opx.Ternary(opx.IsEmptyString(dir), []string{}, strings.Split(dir, PATH_SEPARATOR))
+	dirs := ternarySlice(stringxt.IsEmpty(dir), []string{}, strings.Split(dir, PATH_SEPARATOR))
 	name := NewFileNameFromStr(file)
 	return &Path{
 		Parents: dirs,
@@ -126,7 +126,7 @@ func NewPathFromStr(path string) *Path {
 }
 
 // Make a deep copy of this Path.
-// Added in v0.2.0
+// Available since v0.2.0
 func (s *Path) Clone() *Path {
 	directories := make([]string, len(s.Parents))
 	_ = copy(s.Parents, directories)
@@ -139,9 +139,9 @@ func (s *Path) Clone() *Path {
 
 // Check a Path is whether asbsolute path. Using the same rule as
 // filepath.IsAbs
-// Added in v0.2.0
+// Available since v0.2.0
 func (s *Path) IsAbsolute() bool {
-	if opx.IsEmptySlice(s.Parents) {
+	if isEmptySlice(s.Parents) {
 		return false
 	}
 	fullPath := s.FullPath()
@@ -149,22 +149,22 @@ func (s *Path) IsAbsolute() bool {
 }
 
 // Returns full path represented by this Path.
-// Added in v0.2.0
+// Available since v0.2.0
 func (s *Path) FullPath() string {
-	if opx.IsEmptySlice(s.Parents) {
+	if isEmptySlice(s.Parents) {
 		return s.Name.FullName()
 	}
 	return s.ParentPath() + PATH_SEPARATOR + s.Name.FullName()
 }
 
 // Returns parent path represented by this Path.
-// Added in v0.2.0
+// Available since v0.2.0
 func (s *Path) ParentPath() string {
-	return opx.Ternary(opx.IsEmptySlice(s.Parents), "", strings.Join(s.Parents, PATH_SEPARATOR))
+	return ternary(isEmptySlice(s.Parents), "", strings.Join(s.Parents, PATH_SEPARATOR))
 }
 
 // Check whether two Paths are equal.
-// Added in v0.2.0
+// Available since v0.2.0
 func AreEqualPaths(x, y *Path) bool {
 	if x == nil && y == nil {
 		return true
@@ -172,7 +172,7 @@ func AreEqualPaths(x, y *Path) bool {
 	if x == nil || y == nil {
 		return false
 	}
-	return opx.AreEqualSlices(x.Parents, y.Parents) &&
+	return areEqualSlices(x.Parents, y.Parents) &&
 		AreEqualFileNames(x.Name, y.Name)
 }
 
@@ -180,11 +180,54 @@ func AreEqualPaths(x, y *Path) bool {
 // - Replace all slashes to backslashes if run on Windows.
 // - Replace all backslashes to slashes if run on all UNIX-like OSes.
 // - Clean the path.
-// Added in v0.2.0
+// Available since v0.2.0
 func NormalizePath(path string) string {
-	nPath := opx.Ternary(envx.IsWindows(),
+	nPath := ternary(multiarch.IsWindows(),
 		strings.ReplaceAll(path, "/", "\\"),
 		strings.ReplaceAll(path, "\\", "/"),
 	)
 	return filepath.Clean(nPath)
+}
+
+// forked from opx package
+func areEqualSlices(x, y []string) bool {
+	if x == nil && y == nil {
+		return true
+	}
+	if x == nil || y == nil {
+		return false
+	}
+	if len(x) != len(y) {
+		return false
+	}
+	for i := range x {
+		if x[i] != y[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// forked from opx package
+func isEmptySlice(slice []string) bool {
+	if slice == nil {
+		return true
+	}
+	return len(slice) == 0
+}
+
+// forked from opx package
+func ternary(cond bool, x, y string) string {
+	if cond {
+		return x
+	}
+	return y
+}
+
+// forked from opx package
+func ternarySlice(cond bool, x, y []string) []string {
+	if cond {
+		return x
+	}
+	return y
 }

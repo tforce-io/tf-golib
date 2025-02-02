@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /*
-Package strfmt provides common structs for popular structured string in computing
-such as URL, file path, connection string,...
-Available since v0.2.0
+Package opx provides generics function to handle common pattern that are not
+provided by Go lang standard libraries.
+Available since v0.3.0
 */
-package strfmt
+package opx

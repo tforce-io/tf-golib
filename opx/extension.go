@@ -12,9 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-Package strfmt provides common structs for popular structured string in computing
-such as URL, file path, connection string,...
-Available since v0.2.0
-*/
-package strfmt
+package opx
+
+// Returns the first non-nil value in a array. Only support pointers of the same type.
+// Available since v0.3.0
+func Coalesce[T any](values ...*T) *T {
+	for _, value := range values {
+		if value != nil {
+			return value
+		}
+	}
+	return nil
+}
+
+// Method version of ternary assignmet. If cond is true, returns x, otherwise returns y.
+// Available since v0.3.0
+func Ternary[T any](cond bool, x, y T) T {
+	if cond {
+		return x
+	}
+	return y
+}

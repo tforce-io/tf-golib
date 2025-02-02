@@ -17,8 +17,7 @@ package strfmt
 import (
 	"testing"
 
-	"github.com/tforce-io/tf-golib/stdx/envx"
-	"github.com/tforce-io/tf-golib/stdx/opx"
+	"github.com/tforce-io/tf-golib/multiarch"
 )
 
 func TestNewFileName(t *testing.T) {
@@ -48,9 +47,9 @@ func TestNewFileNameFromStr(t *testing.T) {
 		path     string
 		expected *FileName
 	}
-
-	tests := opx.Ternary(envx.IsWindows(),
-		[]Test{
+	var tests []Test
+	if multiarch.IsWindows() {
+		tests = []Test{
 			{"empty", "", &FileName{}},
 			{"root", "/", &FileName{}},
 			{"root", `\`, &FileName{}},
@@ -68,8 +67,9 @@ func TestNewFileNameFromStr(t *testing.T) {
 			{"relative_path_and_filename", "tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
 			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main", &FileName{Name: "main"}},
 			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
-		},
-		[]Test{
+		}
+	} else {
+		tests = []Test{
 			{"empty", "", &FileName{}},
 			{"root", "/", &FileName{}},
 			{"root", `\`, &FileName{}},
@@ -83,7 +83,8 @@ func TestNewFileNameFromStr(t *testing.T) {
 			{"relative_path_and_filename", "tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
 			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main", &FileName{Name: "main"}},
 			{"absolute_path_and_filename", "/usr/local/tforce-io/tf-golib/main.go", &FileName{Name: "main", Extension: ".go"}},
-		})
+		}
+	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
 			result := NewFileNameFromStr(tt.path)
@@ -160,26 +161,28 @@ func TestNewPath(t *testing.T) {
 		file     *FileName
 		expected *Path
 	}
-	tests := opx.Ternary(envx.IsWindows(),
-		[]Test{
+	var tests []Test
+	if multiarch.IsWindows() {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), &Path{}},
 			{"file_only", []string{}, NewFileNameFromStr("main"), &Path{Name: &FileName{Name: "main"}}},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), &Path{Name: &FileName{Name: "main", Extension: ".go"}}},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), &Path{Parents: []string{"tf-golib"}, Name: &FileName{Name: "main", Extension: ".go"}}},
 			{"absolute_path", []string{"d:", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), &Path{Parents: []string{"d:", "tforce-io", "tf-golib"}, Name: &FileName{Name: "main", Extension: ".go"}}},
-		},
-		[]Test{
+		}
+	} else {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), &Path{}},
 			{"file_only", []string{}, NewFileNameFromStr("main"), &Path{Name: &FileName{Name: "main"}}},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), &Path{Name: &FileName{Name: "main", Extension: ".go"}}},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), &Path{Parents: []string{"tf-golib"}, Name: &FileName{Name: "main", Extension: ".go"}}},
 			{"absolute_path", []string{"d:", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), &Path{Parents: []string{"d:", "tforce-io", "tf-golib"}, Name: &FileName{Name: "main", Extension: ".go"}}},
-		},
-	)
+		}
+	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
 			path := NewPath(tt.dirs, tt.file)
-			if !opx.AreEqualSlices(path.Parents, tt.dirs) || path.Name.FullName() != tt.file.FullName() {
+			if !areEqualSlices(path.Parents, tt.dirs) || path.Name.FullName() != tt.file.FullName() {
 				t.Errorf("expected %v actual %v", tt.expected, path)
 			}
 		})
@@ -193,8 +196,9 @@ func TestNewPathFromStr(t *testing.T) {
 		parents []string
 		name    string
 	}
-	tests := opx.Ternary(envx.IsWindows(),
-		[]Test{
+	var tests []Test
+	if multiarch.IsWindows() {
+		tests = []Test{
 			{"file_only", `main`, []string{}, "main"},
 			{"file_only", `main.go`, []string{}, "main.go"},
 			{"relative_path", `tf-golib\main.go`, []string{"tf-golib"}, "main.go"},
@@ -207,8 +211,9 @@ func TestNewPathFromStr(t *testing.T) {
 			{"trailing_slash", `main.go\\`, []string{}, "main.go"},
 			{"trailing_slash", `tf-golib\\main.go`, []string{"tf-golib"}, "main.go"},
 			{"trailing_slash", `tf-golib\\main.go\\`, []string{"tf-golib"}, "main.go"},
-		},
-		[]Test{
+		}
+	} else {
+		tests = []Test{
 			{"file_only", "main", []string{}, "main"},
 			{"file_only", "main.go", []string{}, "main.go"},
 			{"relative_path", "tf-golib/main.go", []string{"tf-golib"}, "main.go"},
@@ -221,11 +226,12 @@ func TestNewPathFromStr(t *testing.T) {
 			{"trailing_slash", "main.go//", []string{}, "main.go"},
 			{"trailing_slash", "tf-golib//main.go", []string{"tf-golib"}, "main.go"},
 			{"trailing_slash", "tf-golib//main.go//", []string{"tf-golib"}, "main.go"},
-		})
+		}
+	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
 			path := NewPathFromStr(tt.path)
-			if !opx.AreEqualSlices(path.Parents, tt.parents) || path.Name.FullName() != tt.name {
+			if !areEqualSlices(path.Parents, tt.parents) || path.Name.FullName() != tt.name {
 				t.Errorf("expected %v, %v actual %v", tt.parents, tt.name, path)
 			}
 		})
@@ -239,22 +245,24 @@ func TestPath_IsAbsolute(t *testing.T) {
 		file     *FileName
 		expected bool
 	}
-	tests := opx.Ternary(envx.IsWindows(),
-		[]Test{
+	var tests []Test
+	if multiarch.IsWindows() {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), false},
 			{"file_only", []string{}, NewFileNameFromStr("main"), false},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), false},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), false},
 			{"absolute_path", []string{"d:", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), true},
-		},
-		[]Test{
+		}
+	} else {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), false},
 			{"file_only", []string{}, NewFileNameFromStr("main"), false},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), false},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), false},
 			{"absolute_path", []string{"", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), true},
-		},
-	)
+		}
+	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
 			path := NewPath(tt.dirs, tt.file)
@@ -273,22 +281,24 @@ func TestPath_FullPath(t *testing.T) {
 		file     *FileName
 		expected string
 	}
-	tests := opx.Ternary(envx.IsWindows(),
-		[]Test{
+	var tests []Test
+	if multiarch.IsWindows() {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main"), "main"},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), "main.go"},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), "tf-golib\\main.go"},
 			{"absolute_path", []string{"d:", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), "d:\\tforce-io\\tf-golib\\main.go"},
-		},
-		[]Test{
+		}
+	} else {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main"), "main"},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), "main.go"},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), "tf-golib/main.go"},
 			{"absolute_path", []string{"", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), "/tforce-io/tf-golib/main.go"},
-		},
-	)
+		}
+	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
 			path := NewPath(tt.dirs, tt.file)
@@ -307,24 +317,26 @@ func TestPath_ParentPath(t *testing.T) {
 		file     *FileName
 		expected string
 	}
-	tests := opx.Ternary(envx.IsWindows(),
-		[]Test{
+	var tests []Test
+	if multiarch.IsWindows() {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main"), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), ""},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), "tf-golib"},
 			{"absolute_path", []string{"d:", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), "d:\\tforce-io\\tf-golib"},
 			{"absolute_path", []string{"d:"}, NewFileNameFromStr("main.go"), "d:"},
-		},
-		[]Test{
+		}
+	} else {
+		tests = []Test{
 			{"empty", []string{}, NewFileNameFromStr(""), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main"), ""},
 			{"file_only", []string{}, NewFileNameFromStr("main.go"), ""},
 			{"relative_path", []string{"tf-golib"}, NewFileNameFromStr("main.go"), "tf-golib"},
 			{"absolute_path", []string{"", "tforce-io", "tf-golib"}, NewFileNameFromStr("main.go"), "/tforce-io/tf-golib"},
 			{"absolute_path", []string{""}, NewFileNameFromStr("main.go"), ""},
-		},
-	)
+		}
+	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
 			path := NewPath(tt.dirs, tt.file)
