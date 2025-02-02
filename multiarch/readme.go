@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /*
-Package envx provides common used functions to obtain information of current
-system the application is running.
-Added in v0.2.0
+Package multiarch implements functions that facilitate developing application
+that works on multiple operating systems and processor architectures.
+Available since v0.3.0
 */
-package envx
+package multiarch
