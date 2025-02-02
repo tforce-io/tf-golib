@@ -17,35 +17,35 @@ package stdx
 import "encoding/hex"
 
 // A Bytes is wrapped byte slice to provide fluent api for type casting.
-// Added in v0.1.0
+// Available since v0.1.0
 type Bytes []byte
 
 // Cast Bytes as byte slice.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s Bytes) ByteArr() []byte {
 	return s
 }
 
 // Cast Bytes to a Hex.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s Bytes) Hex() *Hex {
 	return NewHex(s, false)
 }
 
 // Cast Bytes to a hex string without "0x" prefix.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s Bytes) HexStr() string {
 	return hex.EncodeToString(s)
 }
 
 // Returns underlying value of Bytes as byte slice.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s Bytes) Value() []byte {
 	return s
 }
 
 // A Hex is another presetnation of hex string to provide fluent api for type casting.
-// Added in v0.1.0
+// Available since v0.1.0
 type Hex struct {
 	value     Bytes
 	hasPrefix bool
@@ -53,25 +53,25 @@ type Hex struct {
 
 // Create new instance of Hex using Bytes.
 // Must indicate whether that Hex has prefix of "0x".
-// Added in v0.1.0
+// Available since v0.1.0
 func NewHex(value Bytes, hasPrefix bool) *Hex {
 	return &Hex{value, hasPrefix}
 }
 
 // Cast Hex as Bytes.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s *Hex) Bytes() Bytes {
 	return s.value
 }
 
 // Cast Hex as byte slice.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s *Hex) ByteArr() []byte {
 	return s.value
 }
 
 // Returns underlying value of Hex as string.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s *Hex) Value() string {
 	if s.hasPrefix {
 		return "0x" + s.value.HexStr()

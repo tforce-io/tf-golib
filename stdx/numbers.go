@@ -19,25 +19,25 @@ import (
 )
 
 // A Uint256 is wrapped *big.Int to intergrate with system that use large number and provide fluent apis for type casting.
-// Added in v0.1.0
+// Available since v0.1.0
 type Uint256 struct {
 	value *big.Int
 }
 
 // Cast Uint256 to *big.Int.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s *Uint256) BigInt() *big.Int {
 	return s.value
 }
 
 // Cast Uint256 to uint64. This may cause data loss when the value is larger than 18446744073709551615.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s *Uint256) Uint64() uint64 {
 	return s.value.Uint64()
 }
 
 // Returns underlying value of Bytes as *big.Int.
-// Added in v0.1.0
+// Available since v0.1.0
 func (s *Uint256) Value() *big.Int {
 	return s.value
 }
