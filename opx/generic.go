@@ -54,17 +54,6 @@ func AreEqualSlicesFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool
 	return true
 }
 
-// Returns the first non-nil value in a array. Only support pointers of the same type.
-// Available since v0.3.0
-func Coalesce[T any](values ...*T) *T {
-	for _, value := range values {
-		if value != nil {
-			return value
-		}
-	}
-	return nil
-}
-
 // Check whether a value v is a member of slice s.
 // Available since v0.3.0
 func Contains[S ~[]T, T comparable](s S, v T) bool {
@@ -94,13 +83,4 @@ func IsEmptySlice[S ~[]T, T any](slice S) bool {
 		return true
 	}
 	return len(slice) == 0
-}
-
-// Method version of ternary assignmet. If cond is true, returns x, otherwise returns y.
-// Available since v0.3.0
-func Ternary[T any](cond bool, x, y T) T {
-	if cond {
-		return x
-	}
-	return y
 }
