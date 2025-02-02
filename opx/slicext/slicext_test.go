@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package opx
+package slicext
 
 import (
 	"testing"
 )
 
-func TestAreEqualSlices(t *testing.T) {
+func TestAreEqual(t *testing.T) {
 	tests := []struct {
 		group    string
 		x        []int
@@ -42,11 +42,11 @@ func TestAreEqualSlices(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
-			result := AreEqualSlices(tt.x, tt.y)
+			result := AreEqual(tt.x, tt.y)
 			if result != tt.expected {
 				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.x, tt.y)
 			}
-			result = AreEqualSlices(tt.y, tt.x)
+			result = AreEqual(tt.y, tt.x)
 			if result != tt.expected {
 				t.Errorf("expected %v actual left %v actual right %v ", tt.expected, tt.y, tt.x)
 			}
@@ -76,7 +76,7 @@ func TestContains(t *testing.T) {
 	}
 }
 
-func TestIsEmptySlice(t *testing.T) {
+func TestIsEmpty(t *testing.T) {
 	tests := []struct {
 		group    string
 		slice    []int
@@ -94,7 +94,7 @@ func TestIsEmptySlice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.group, func(t *testing.T) {
-			result := IsEmptySlice(tt.slice)
+			result := IsEmpty(tt.slice)
 			if result != tt.expected {
 				t.Errorf("expected %v actual %v intermediate %v", tt.expected, result, tt.slice)
 			}

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package opx
+package slicext
 
 // Compare two slices x and y of comparable types that is deep equals.
 // Available since v0.3.0
-func AreEqualSlices[S ~[]T, T comparable](x, y S) bool {
+func AreEqual[S ~[]T, T comparable](x, y S) bool {
 	if x == nil && y == nil {
 		return true
 	}
@@ -36,7 +36,7 @@ func AreEqualSlices[S ~[]T, T comparable](x, y S) bool {
 
 // Compare two slices x and y of any type that is deep equals.
 // Available since v0.3.0
-func AreEqualSlicesFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
+func AreEqualFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool {
 	if x == nil && y == nil {
 		return true
 	}
@@ -78,7 +78,7 @@ func ContainsFunc[S ~[]T, T comparable](s S, v T, equalFunc func(x, y T) bool) b
 
 // Check whether is slice is Nil nor zero in length.
 // Available since v0.3.0
-func IsEmptySlice[S ~[]T, T any](slice S) bool {
+func IsEmpty[S ~[]T, T any](slice S) bool {
 	if slice == nil {
 		return true
 	}
