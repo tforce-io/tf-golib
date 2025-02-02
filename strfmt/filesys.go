@@ -20,7 +20,6 @@ import (
 	"strings"
 
 	"github.com/tforce-io/tf-golib/multiarch"
-	"github.com/tforce-io/tf-golib/opx"
 	"github.com/tforce-io/tf-golib/stdx/stringxt"
 )
 
@@ -118,7 +117,7 @@ func NewPathFromStr(path string) *Path {
 	nPath := NormalizePath(path)
 	dir, file := filepath.Split(nPath)
 	dir = strings.TrimSuffix(dir, PATH_SEPARATOR)
-	dirs := opx.Ternary(stringxt.IsEmpty(dir), []string{}, strings.Split(dir, PATH_SEPARATOR))
+	dirs := ternarySlice(stringxt.IsEmpty(dir), []string{}, strings.Split(dir, PATH_SEPARATOR))
 	name := NewFileNameFromStr(file)
 	return &Path{
 		Parents: dirs,
@@ -142,7 +141,7 @@ func (s *Path) Clone() *Path {
 // filepath.IsAbs
 // Added in v0.2.0
 func (s *Path) IsAbsolute() bool {
-	if opx.IsEmptySlice(s.Parents) {
+	if isEmptySlice(s.Parents) {
 		return false
 	}
 	fullPath := s.FullPath()
@@ -152,7 +151,7 @@ func (s *Path) IsAbsolute() bool {
 // Returns full path represented by this Path.
 // Added in v0.2.0
 func (s *Path) FullPath() string {
-	if opx.IsEmptySlice(s.Parents) {
+	if isEmptySlice(s.Parents) {
 		return s.Name.FullName()
 	}
 	return s.ParentPath() + PATH_SEPARATOR + s.Name.FullName()
@@ -161,7 +160,7 @@ func (s *Path) FullPath() string {
 // Returns parent path represented by this Path.
 // Added in v0.2.0
 func (s *Path) ParentPath() string {
-	return opx.Ternary(opx.IsEmptySlice(s.Parents), "", strings.Join(s.Parents, PATH_SEPARATOR))
+	return ternary(isEmptySlice(s.Parents), "", strings.Join(s.Parents, PATH_SEPARATOR))
 }
 
 // Check whether two Paths are equal.
@@ -173,7 +172,7 @@ func AreEqualPaths(x, y *Path) bool {
 	if x == nil || y == nil {
 		return false
 	}
-	return opx.AreEqualSlices(x.Parents, y.Parents) &&
+	return areEqualSlices(x.Parents, y.Parents) &&
 		AreEqualFileNames(x.Name, y.Name)
 }
 
@@ -183,9 +182,52 @@ func AreEqualPaths(x, y *Path) bool {
 // - Clean the path.
 // Added in v0.2.0
 func NormalizePath(path string) string {
-	nPath := opx.Ternary(multiarch.IsWindows(),
+	nPath := ternary(multiarch.IsWindows(),
 		strings.ReplaceAll(path, "/", "\\"),
 		strings.ReplaceAll(path, "\\", "/"),
 	)
 	return filepath.Clean(nPath)
+}
+
+// forked from opx package
+func areEqualSlices(x, y []string) bool {
+	if x == nil && y == nil {
+		return true
+	}
+	if x == nil || y == nil {
+		return false
+	}
+	if len(x) != len(y) {
+		return false
+	}
+	for i := range x {
+		if x[i] != y[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// forked from opx package
+func isEmptySlice(slice []string) bool {
+	if slice == nil {
+		return true
+	}
+	return len(slice) == 0
+}
+
+// forked from opx package
+func ternary(cond bool, x, y string) string {
+	if cond {
+		return x
+	}
+	return y
+}
+
+// forked from opx package
+func ternarySlice(cond bool, x, y []string) []string {
+	if cond {
+		return x
+	}
+	return y
 }
