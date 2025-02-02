@@ -96,25 +96,6 @@ func IsEmptySlice[S ~[]T, T any](slice S) bool {
 	return len(slice) == 0
 }
 
-// Check whether a string has zero length.
-// Available since v0.3.0
-func IsEmptyString(str string) bool {
-	return str == ""
-}
-
-// Check whether a string has zero length or contains only whitespace rune(s).
-// Available since v0.3.0
-func IsEmptyOrWhitespaceString(str string) bool {
-	if len(str) > 0 {
-		for _, c := range str {
-			if c != 0x0020 && c != 0x0009 {
-				return false
-			}
-		}
-	}
-	return true
-}
-
 // Method version of ternary assignmet. If cond is true, returns x, otherwise returns y.
 // Available since v0.3.0
 func Ternary[T any](cond bool, x, y T) T {

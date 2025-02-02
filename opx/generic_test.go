@@ -147,69 +147,6 @@ func TestIsEmptySlice(t *testing.T) {
 	}
 }
 
-func TestIsEmptyString(t *testing.T) {
-	tests := []struct {
-		group    string
-		str      string
-		expected bool
-	}{
-		// empty
-		{"empty", "", true},
-		// ascii
-		{"ascii", "a", false},
-		{"ascii", "hello", false},
-		{"ascii", "hello world", false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.group, func(t *testing.T) {
-			result := IsEmptyString(tt.str)
-			if result != tt.expected {
-				t.Errorf("expected %v actual %v intermediate %v", tt.expected, result, tt.str)
-			}
-		})
-	}
-}
-
-func TestIsEmptyOrWhitespaceString(t *testing.T) {
-	tests := []struct {
-		group    string
-		str      string
-		expected bool
-	}{
-		// empty
-		{"empty", "", true},
-		// all whitespace
-		{"all whitespace", " ", true},
-		{"all whitespace", "  ", true},
-		{"all whitespace", "       ", true},
-		// all tabs
-		{"all tabs", "\t", true},
-		{"all tabs", "\t\t", true},
-		{"all tabs", "\t\t\t\t\t\t\t", true},
-		// mixed whitespaces and tabs
-		{"mixed whitespaces and tabs", " \t", true},
-		{"mixed whitespaces and tabs", " \t ", true},
-		{"mixed whitespaces and tabs", " \t \t", true},
-		{"mixed whitespaces and tabs", " \t \t\t \t", true},
-		{"mixed whitespaces and tabs", "\t ", true},
-		{"mixed whitespaces and tabs", "\t \t", true},
-		{"mixed whitespaces and tabs", "\t \t ", true},
-		{"mixed whitespaces and tabs", "\t \t  \t ", true},
-		// ascii
-		{"ascii", "a", false},
-		{"ascii", "hello", false},
-		{"ascii", "hello world", false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.group, func(t *testing.T) {
-			result := IsEmptyOrWhitespaceString(tt.str)
-			if result != tt.expected {
-				t.Errorf("expected %v actual %v intermediate %v", tt.expected, result, tt.str)
-			}
-		})
-	}
-}
-
 func TestTernary(t *testing.T) {
 	tests := []struct {
 		group    string
