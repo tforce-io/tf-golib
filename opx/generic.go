@@ -55,7 +55,7 @@ func AreEqualSlicesFunc[S ~[]T, T any](x, y S, equalFunc func(x, y T) bool) bool
 }
 
 // Returns the first non-nil value in a array. Only support pointers of the same type.
-// Added in v0.1.0
+// Available since v0.3.0
 func Coalesce[T any](values ...*T) *T {
 	for _, value := range values {
 		if value != nil {
@@ -116,7 +116,7 @@ func IsEmptyOrWhitespaceString(str string) bool {
 }
 
 // Method version of ternary assignmet. If cond is true, returns x, otherwise returns y.
-// Added in v0.1.0
+// Available since v0.3.0
 func Ternary[T any](cond bool, x, y T) T {
 	if cond {
 		return x
