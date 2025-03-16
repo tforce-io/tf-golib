@@ -74,7 +74,7 @@ func (s *FileName) Clone() *FileName {
 	}
 }
 
-// Returns full name represented by this FileName.
+// Return full name represented by this FileName.
 // Available since v0.2.0
 func (s *FileName) FullName() string {
 	return s.Prefix + s.Name + s.Suffix + s.Extension
@@ -148,7 +148,7 @@ func (s *Path) IsAbsolute() bool {
 	return filepath.IsAbs(fullPath)
 }
 
-// Returns full path represented by this Path.
+// Return full path represented by this Path.
 // Available since v0.2.0
 func (s *Path) FullPath() string {
 	if isEmptySlice(s.Parents) {
@@ -157,7 +157,7 @@ func (s *Path) FullPath() string {
 	return s.ParentPath() + PATH_SEPARATOR + s.Name.FullName()
 }
 
-// Returns parent path represented by this Path.
+// Return parent path represented by this Path.
 // Available since v0.2.0
 func (s *Path) ParentPath() string {
 	return ternary(isEmptySlice(s.Parents), "", strings.Join(s.Parents, PATH_SEPARATOR))

@@ -14,7 +14,7 @@
 
 package opx
 
-// Returns the first non-nil value in a array. Only support pointers of the same type.
+// Return the first non-nil value in a array. Only support pointers of the same type.
 // Available since v0.3.0
 func Coalesce[T any](values ...*T) *T {
 	for _, value := range values {
