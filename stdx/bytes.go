@@ -38,7 +38,7 @@ func (s Bytes) HexStr() string {
 	return hex.EncodeToString(s)
 }
 
-// Returns underlying value of Bytes as byte slice.
+// Return underlying value of Bytes as byte slice.
 // Available since v0.1.0
 func (s Bytes) Value() []byte {
 	return s
@@ -70,7 +70,7 @@ func (s *Hex) ByteArr() []byte {
 	return s.value
 }
 
-// Returns underlying value of Hex as string.
+// Return underlying value of Hex as string.
 // Available since v0.1.0
 func (s *Hex) Value() string {
 	if s.hasPrefix {

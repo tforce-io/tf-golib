@@ -36,7 +36,7 @@ func (s *Uint256) Uint64() uint64 {
 	return s.value.Uint64()
 }
 
-// Returns underlying value of Bytes as *big.Int.
+// Return underlying value of Bytes as *big.Int.
 // Available since v0.1.0
 func (s *Uint256) Value() *big.Int {
 	return s.value
