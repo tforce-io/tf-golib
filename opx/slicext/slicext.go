@@ -76,11 +76,35 @@ func ContainsFunc[S ~[]T, T comparable](s S, v T, equalFunc func(x, y T) bool) b
 	return false
 }
 
-// Check whether is slice is Nil nor zero in length.
+// Check whether slice s is Nil nor zero in length.
 // Available since v0.3.0
-func IsEmpty[S ~[]T, T any](slice S) bool {
-	if slice == nil {
+func IsEmpty[S ~[]T, T any](s S) bool {
+	if s == nil {
 		return true
 	}
-	return len(slice) == 0
+	return len(s) == 0
+}
+
+// Map a slice contains items of type T to a new slice contains equivalent number items of type N.
+// Nil handling and special conversion will be taken care of in mapFunc.
+// Available since v0.4.0
+func Map[S ~[]T, M ~[]N, T, N any](s S, mapFunc func(t T) N) M {
+	m := make([]N, len(s))
+	for i, t := range s {
+		m[i] = mapFunc(t)
+	}
+	return m
+}
+
+// Map a slice contains items of type T to a Key-Value map.
+// keyFunc must returns extra bool to indicate whether slice item T will be included in the resulted map.
+// Available since v0.4.0
+func MapKV[S ~[]T, K comparable, V, T any](s S, keyFunc func(t T) (K, bool), valFunc func(t T) V) map[K]V {
+	m := make(map[K]V)
+	for _, t := range s {
+		if k, ok := keyFunc(t); ok {
+			m[k] = valFunc(t)
+		}
+	}
+	return m
 }
