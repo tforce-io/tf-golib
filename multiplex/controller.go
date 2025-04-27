@@ -18,7 +18,7 @@ import "github.com/tforce-io/tf-golib/diag"
 
 // ServiceController is a controller for managing services and routing messages between them.
 //
-// Available since vTBD
+// Available since v0.5.0
 type ServiceController struct {
 	ServiceCore
 	router   *ServiceRouter
@@ -27,7 +27,7 @@ type ServiceController struct {
 
 // Return new ServiceRouter.
 //
-// Available since vTBD
+// Available since v0.5.0
 func NewServiceController(logger diag.Logger) *ServiceController {
 	svc := &ServiceController{}
 	router := &ServiceRouter{
@@ -41,21 +41,21 @@ func NewServiceController(logger diag.Logger) *ServiceController {
 
 // Register service for routing.
 //
-// Available since vTBD
+// Available since v0.5.0
 func (s *ServiceController) Register(service Service) {
 	s.services[service.ServiceID()] = service
 }
 
 // Unregister a service by serviceID.
 //
-// Available since vTBD
+// Available since v0.5.0
 func (s *ServiceController) Unregister(serviceID string) {
 	delete(s.services, serviceID)
 }
 
 // Run the controller.
 //
-// Available since vTBD
+// Available since v0.5.0
 func (s *ServiceController) Run(background bool) {
 	s.SetWorker(1)
 
@@ -68,7 +68,7 @@ func (s *ServiceController) Run(background bool) {
 
 // coreProcessHook is responsible for processing messages in the controller.
 //
-// Available since vTBD
+// Available since v0.5.0
 func (s *ServiceController) coreProcessHook(workerID uint64, msg *ServiceMessage) *HookState {
 	serviceID := msg.Extra.(*ControllerExtra).ServiceID
 	if serviceID == "" && msg.Command == "exit" {
@@ -80,14 +80,14 @@ func (s *ServiceController) coreProcessHook(workerID uint64, msg *ServiceMessage
 
 // ServiceRouter is responsible for routing messages between services.
 //
-// Available since vTBD
+// Available since v0.5.0
 type ServiceRouter struct {
 	c *ServiceController
 }
 
 // Forward the message to the specified serviceID.
 //
-// Available since vTBD
+// Available since v0.5.0
 func (s *ServiceRouter) Forward(serviceID, command string, params ExecParams) {
 	msg := &ServiceMessage{
 		Command: command,
@@ -101,7 +101,7 @@ func (s *ServiceRouter) Forward(serviceID, command string, params ExecParams) {
 
 // ControllerExtra contains additional information for request to the controller.
 //
-// Available since vTBD
+// Available since v0.5.0
 type ControllerExtra struct {
 	ServiceID string
 }

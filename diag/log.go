@@ -18,7 +18,7 @@ import "log"
 
 // Logger defines required function for all log levels used for application logging.
 //
-// Available since vTBD
+// Available since v0.5.0
 type Logger interface {
 	// Print a message with Error level.
 	Error(err error, v ...interface{})
@@ -49,7 +49,7 @@ type Logger interface {
 // DefaultLogger implement Logger interface that prints log message to stdout
 // using global logger instance of Go.
 //
-// Available since vTBD
+// Available since v0.5.0
 type DefaultLogger struct {
 }
 

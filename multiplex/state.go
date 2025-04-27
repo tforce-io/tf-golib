@@ -16,7 +16,7 @@ package multiplex
 
 // ProcessState indicates status of service's Process routine.
 //
-// Available since vTBD
+// Available since v0.5.0
 type ProcessState int8
 
 const (
@@ -38,7 +38,7 @@ const (
 
 // ProcessState indicates status of service's Hook processing.
 //
-// Available since vTBD
+// Available since v0.5.0
 type HookState struct {
 	Handled bool
 }
