@@ -15,6 +15,8 @@
 package multiplex
 
 import (
+	"sync"
+
 	"github.com/tforce-io/tf-golib/diag"
 )
 
@@ -171,6 +173,42 @@ func (s ServiceCore) process(workerID uint64) {
 type ServiceMessage struct {
 	Command string
 	Params  ExecParams
+	Returns *ReturnParams
+}
+
+// Indicate that the request expect returning result.
+// This is for sender side.
+//
+// Available since vTBD
+func (p *ServiceMessage) ExpectReturns() {
+	p.Returns = &ReturnParams{
+		signal: new(sync.WaitGroup),
+	}
+}
+
+// Set the returning result then signal listener that the request has been completed.
+// Nothing will be done if the sender doesn't expect returns.
+// This is for recipient side.
+//
+// Available since vTBD
+func (p *ServiceMessage) CompleteReturns(result interface{}) {
+	if p.Returns != nil {
+		p.Returns.result = result
+		p.Returns.signal.Done()
+	}
+}
+
+// Listen to the signal and return received result.
+// The routine won't be blocked and receive nil if it doesn't expect returns.
+// This is for sender side.
+//
+// Available since vTBD
+func (p *ServiceMessage) WaitForReturns() interface{} {
+	if p.Returns != nil {
+		p.Returns.signal.Wait()
+		return p.Returns.result
+	}
+	return nil
 }
 
 // Collection of parameters as key-value mapping.
@@ -200,4 +238,12 @@ func (p ExecParams) Set(key string, val interface{}) {
 // Available since vTBD
 func (p ExecParams) Delete(key string) {
 	delete(p, key)
+}
+
+// ReturnParams comprises of a dyanmic type result and a signal for synchronous support.
+//
+// Available since vTBD
+type ReturnParams struct {
+	signal *sync.WaitGroup
+	result interface{}
 }
