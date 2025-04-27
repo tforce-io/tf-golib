@@ -35,3 +35,10 @@ const (
 	// The request is processed failed and need to be retried.
 	RetryState
 )
+
+// ProcessState indicates status of service's Hook processing.
+//
+// Available since vTBD
+type HookState struct {
+	Handled bool
+}

@@ -34,6 +34,11 @@ type Service interface {
 	// Available since vTBD
 	ServiceID() string
 
+	// Return Router for inter-service operability.
+	//
+	// Available since vTBD
+	Router() *ServiceRouter
+
 	// Set number of Process routines the service should use to handle requests.
 	//
 	// Available since vTBD
@@ -48,6 +53,11 @@ type Service interface {
 	//
 	// Available since vTBD
 	Exec(command string, params ExecParams)
+
+	// Request other service to handle the request via configurated Router.
+	//
+	// Available since vTBD
+	Dispatch(serviceID string, command string, params ExecParams)
 }
 
 // ServiceCore is the base struct for deriving new service.
@@ -61,7 +71,7 @@ type ServiceCore struct {
 // Init ServiceCore internal and return the reference for later access.
 //
 // Available since vTBD
-func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, processHook func(workerID uint64, msg *ServiceMessage)) *ServiceCoreInternal {
+func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, processHook func(workerID uint64, msg *ServiceMessage) *HookState) *ServiceCoreInternal {
 	if s.i != nil {
 		return s.i
 	}
@@ -83,6 +93,7 @@ func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, proc
 type ServiceCoreInternal struct {
 	ServiceID string
 	WorkerID  uint64
+	Router    *ServiceRouter
 
 	MainChan chan *ServiceMessage
 
@@ -91,7 +102,7 @@ type ServiceCoreInternal struct {
 
 	Logger diag.Logger
 
-	CoreProcessHook func(workerID uint64, msg *ServiceMessage)
+	CoreProcessHook func(workerID uint64, msg *ServiceMessage) *HookState
 }
 
 // Return Service Identifier string.
@@ -99,6 +110,20 @@ type ServiceCoreInternal struct {
 // Available since vTBD
 func (s ServiceCore) ServiceID() string {
 	return s.i.ServiceID
+}
+
+// Return Router for inter-service operability.
+//
+// Available since vTBD
+func (s ServiceCore) Router() *ServiceRouter {
+	return s.i.Router
+}
+
+// Set router to use for inter-service operability.
+//
+// Available since vTBD
+func (s ServiceCore) SetRouter(controller *ServiceController) {
+	s.i.Router = controller.router
 }
 
 // Set number of Process routines the service should use to handle requests.
@@ -146,6 +171,13 @@ func (s ServiceCore) Exec(command string, params ExecParams) {
 	s.i.MainChan <- msg
 }
 
+// Request other service to handle the request via configurated Router.
+//
+// Available since vTBD
+func (s ServiceCore) Dispatch(serviceID string, command string, params ExecParams) {
+	s.i.Router.Forward(serviceID, command, params)
+}
+
 // Process routine to handle the request.
 //
 // Available since vTBD
@@ -156,7 +188,10 @@ func (s ServiceCore) process(workerID uint64) {
 	for status != ExitState {
 		msg := <-s.i.MainChan
 		if s.i.CoreProcessHook != nil {
-			s.i.CoreProcessHook(workerID, msg)
+			hookState := s.i.CoreProcessHook(workerID, msg)
+			if hookState.Handled {
+				continue
+			}
 		}
 		if msg.Command == "exit" {
 			status = ExitState
@@ -174,6 +209,7 @@ type ServiceMessage struct {
 	Command string
 	Params  ExecParams
 	Returns *ReturnParams
+	Extra   interface{}
 }
 
 // Indicate that the request expect returning result.
