@@ -23,6 +23,8 @@ import (
 const (
 	// Number of pending requests a service supports.
 	MainChainCapacity = 256
+	// Number of pending requests a service supports.
+	ExtraChanCapacity = 16
 )
 
 // Service interface defines minimum functions for a service.
@@ -78,6 +80,7 @@ func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, proc
 	s.i = &ServiceCoreInternal{
 		ServiceID:     serviceID,
 		MainChan:      make(chan *ServiceMessage, MainChainCapacity),
+		ExitChan:      make(chan bool, ExtraChanCapacity),
 		WorkerCounter: &Uint64ThreadSafe{},
 
 		Logger: logger,
@@ -95,7 +98,9 @@ type ServiceCoreInternal struct {
 	WorkerID  uint64
 	Router    *ServiceRouter
 
-	MainChan chan *ServiceMessage
+	MainChan   chan *ServiceMessage
+	ExitChan   chan bool
+	Background bool
 
 	WorkerCounter *Uint64ThreadSafe
 	WorkerCount   uint64
@@ -200,6 +205,9 @@ func (s ServiceCore) process(workerID uint64) {
 	}
 	s.i.WorkerCounter.Sub(1)
 	s.i.Logger.Infof("%s#%d Process exited.", s.i.ServiceID, workerID)
+	if s.i.Background {
+		s.i.ExitChan <- true
+	}
 }
 
 // ServiceMessage defines a request for processing by Service.

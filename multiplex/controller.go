@@ -56,8 +56,14 @@ func (s *ServiceController) Unregister(serviceID string) {
 // Run the controller.
 //
 // Available since vTBD
-func (s *ServiceController) Run() {
+func (s *ServiceController) Run(background bool) {
 	s.SetWorker(1)
+
+	if background {
+		s.i.Background = true
+		<-s.i.ExitChan
+		s.i.Background = false
+	}
 }
 
 // coreProcessHook is responsible for processing messages in the controller.
