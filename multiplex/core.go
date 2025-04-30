@@ -228,6 +228,17 @@ func (p *ServiceMessage) ExpectReturns() {
 	p.Returns = &ReturnParams{
 		signal: new(sync.WaitGroup),
 	}
+	p.Returns.signal.Add(1)
+}
+
+// Indicate that the request expect returning result using a custom signal.
+// This is for sender side.
+//
+// Available since v0.5.1
+func (p *ServiceMessage) ExpectReturnsCustomSignal(signal *sync.WaitGroup) {
+	p.Returns = &ReturnParams{
+		signal: signal,
+	}
 }
 
 // Set the returning result then signal listener that the request has been completed.
@@ -239,6 +250,17 @@ func (p *ServiceMessage) CompleteReturns(result interface{}) {
 	if p.Returns != nil {
 		p.Returns.result = result
 		p.Returns.signal.Done()
+	}
+}
+
+// Listen to the signal.
+// The routine won't be blocked and receive nil if it doesn't expect returns.
+// This is for sender side.
+//
+// Available since v0.5.1
+func (p *ServiceMessage) Wait() {
+	if p.Returns != nil {
+		p.Returns.signal.Wait()
 	}
 }
 
@@ -290,4 +312,18 @@ func (p ExecParams) Delete(key string) {
 type ReturnParams struct {
 	signal *sync.WaitGroup
 	result interface{}
+}
+
+// Return Singal of the param.
+//
+// Available since v0.5.1
+func (p *ReturnParams) Signal() *sync.WaitGroup {
+	return p.signal
+}
+
+// Return Result of the param.
+//
+// Available since v0.5.1
+func (p *ReturnParams) Result() interface{} {
+	return p.result
 }
