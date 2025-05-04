@@ -15,8 +15,6 @@
 package multiplex
 
 import (
-	"sync"
-
 	"github.com/tforce-io/tf-golib/diag"
 )
 
@@ -70,26 +68,6 @@ type ServiceCore struct {
 	i *ServiceCoreInternal
 }
 
-// Init ServiceCore internal and return the reference for later access.
-//
-// Available since v0.5.0
-func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, processHook func(workerID uint64, msg *ServiceMessage) *HookState) *ServiceCoreInternal {
-	if s.i != nil {
-		return s.i
-	}
-	s.i = &ServiceCoreInternal{
-		ServiceID:     serviceID,
-		MainChan:      make(chan *ServiceMessage, MainChainCapacity),
-		ExitChan:      make(chan bool, ExtraChanCapacity),
-		WorkerCounter: &Uint64ThreadSafe{},
-
-		Logger: logger,
-
-		CoreProcessHook: processHook,
-	}
-	return s.i
-}
-
 // ServiceCoreInternal stores internal data of a ServiceCore.
 //
 // Available since v0.5.0
@@ -110,6 +88,26 @@ type ServiceCoreInternal struct {
 	CoreProcessHook func(workerID uint64, msg *ServiceMessage) *HookState
 }
 
+// Init ServiceCore internal and return the reference for later access.
+//
+// Available since v0.5.0
+func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, processHook func(workerID uint64, msg *ServiceMessage) *HookState) *ServiceCoreInternal {
+	if s.i != nil {
+		return s.i
+	}
+	s.i = &ServiceCoreInternal{
+		ServiceID:     serviceID,
+		MainChan:      make(chan *ServiceMessage, MainChainCapacity),
+		ExitChan:      make(chan bool, ExtraChanCapacity),
+		WorkerCounter: &Uint64ThreadSafe{},
+
+		Logger: logger,
+
+		CoreProcessHook: processHook,
+	}
+	return s.i
+}
+
 // Return Service Identifier string.
 //
 // Available since v0.5.0
@@ -128,7 +126,7 @@ func (s ServiceCore) Router() *ServiceRouter {
 //
 // Available since v0.5.0
 func (s ServiceCore) SetRouter(controller *ServiceController) {
-	s.i.Router = controller.router
+	s.i.Router = controller.i.Router
 }
 
 // Set number of Process routines the service should use to handle requests.
@@ -188,7 +186,7 @@ func (s ServiceCore) Dispatch(serviceID string, command string, params ExecParam
 // Available since v0.5.0
 func (s ServiceCore) process(workerID uint64) {
 	s.i.WorkerCounter.Add(1)
-	s.i.Logger.Infof("%s#%d Process started.", s.i.ServiceID, workerID)
+	s.i.Logger.Infof("%s#%d: Process started.", s.i.ServiceID, workerID)
 	status := InitState
 	for status != ExitState {
 		msg := <-s.i.MainChan
@@ -204,126 +202,8 @@ func (s ServiceCore) process(workerID uint64) {
 		}
 	}
 	s.i.WorkerCounter.Sub(1)
-	s.i.Logger.Infof("%s#%d Process exited.", s.i.ServiceID, workerID)
+	s.i.Logger.Infof("%s#%d: Process exited.", s.i.ServiceID, workerID)
 	if s.i.Background {
 		s.i.ExitChan <- true
 	}
-}
-
-// ServiceMessage defines a request for processing by Service.
-//
-// Available since v0.5.0
-type ServiceMessage struct {
-	Command string
-	Params  ExecParams
-	Returns *ReturnParams
-	Extra   interface{}
-}
-
-// Indicate that the request expect returning result.
-// This is for sender side.
-//
-// Available since v0.5.0
-func (p *ServiceMessage) ExpectReturns() {
-	p.Returns = &ReturnParams{
-		signal: new(sync.WaitGroup),
-	}
-	p.Returns.signal.Add(1)
-}
-
-// Indicate that the request expect returning result using a custom signal.
-// This is for sender side.
-//
-// Available since v0.5.1
-func (p *ServiceMessage) ExpectReturnsCustomSignal(signal *sync.WaitGroup) {
-	p.Returns = &ReturnParams{
-		signal: signal,
-	}
-}
-
-// Set the returning result then signal listener that the request has been completed.
-// Nothing will be done if the sender doesn't expect returns.
-// This is for recipient side.
-//
-// Available since v0.5.0
-func (p *ServiceMessage) CompleteReturns(result interface{}) {
-	if p.Returns != nil {
-		p.Returns.result = result
-		p.Returns.signal.Done()
-	}
-}
-
-// Listen to the signal.
-// The routine won't be blocked and receive nil if it doesn't expect returns.
-// This is for sender side.
-//
-// Available since v0.5.1
-func (p *ServiceMessage) Wait() {
-	if p.Returns != nil {
-		p.Returns.signal.Wait()
-	}
-}
-
-// Listen to the signal and return received result.
-// The routine won't be blocked and receive nil if it doesn't expect returns.
-// This is for sender side.
-//
-// Available since v0.5.0
-func (p *ServiceMessage) WaitForReturns() interface{} {
-	if p.Returns != nil {
-		p.Returns.signal.Wait()
-		return p.Returns.result
-	}
-	return nil
-}
-
-// Collection of parameters as key-value mapping.
-//
-// Available since v0.5.0
-type ExecParams map[string]interface{}
-
-// Return parameter value if any, and a bool indicate if the key exists.
-//
-// Available since v0.5.0
-func (p ExecParams) Get(key string) (interface{}, bool) {
-	if val, ok := p[key]; ok {
-		return val, true
-	}
-	return nil, false
-}
-
-// Set parameter with specified key.
-//
-// Available since v0.5.0
-func (p ExecParams) Set(key string, val interface{}) {
-	p[key] = val
-}
-
-// Delete parameter with specified key.
-//
-// Available since v0.5.0
-func (p ExecParams) Delete(key string) {
-	delete(p, key)
-}
-
-// ReturnParams comprises of a dyanmic type result and a signal for synchronous support.
-//
-// Available since v0.5.0
-type ReturnParams struct {
-	signal *sync.WaitGroup
-	result interface{}
-}
-
-// Return Singal of the param.
-//
-// Available since v0.5.1
-func (p *ReturnParams) Signal() *sync.WaitGroup {
-	return p.signal
-}
-
-// Return Result of the param.
-//
-// Available since v0.5.1
-func (p *ReturnParams) Result() interface{} {
-	return p.result
 }

@@ -21,7 +21,6 @@ import "github.com/tforce-io/tf-golib/diag"
 // Available since v0.5.0
 type ServiceController struct {
 	ServiceCore
-	router   *ServiceRouter
 	services map[string]Service
 }
 
@@ -30,11 +29,10 @@ type ServiceController struct {
 // Available since v0.5.0
 func NewServiceController(logger diag.Logger) *ServiceController {
 	svc := &ServiceController{}
-	router := &ServiceRouter{
+	svc.InitServiceCore("Controller", logger, svc.coreProcessHook)
+	svc.i.Router = &ServiceRouter{
 		c: svc,
 	}
-	svc.InitServiceCore("Controller", logger, svc.coreProcessHook)
-	svc.router = router
 	svc.services = make(map[string]Service)
 	return svc
 }
@@ -42,8 +40,13 @@ func NewServiceController(logger diag.Logger) *ServiceController {
 // Register service for routing.
 //
 // Available since v0.5.0
-func (s *ServiceController) Register(service Service) {
+func (s *ServiceController) Register(service Service) bool {
+	if service.Router() != s.Router() {
+		s.i.Logger.Warn("Service %s's router is invalid", service.ServiceID())
+		return false
+	}
 	s.services[service.ServiceID()] = service
+	return true
 }
 
 // Unregister a service by serviceID.
@@ -70,10 +73,10 @@ func (s *ServiceController) Run(background bool) {
 //
 // Available since v0.5.0
 func (s *ServiceController) coreProcessHook(workerID uint64, msg *ServiceMessage) *HookState {
-	serviceID := msg.Extra.(*ControllerExtra).ServiceID
-	if serviceID == "" && msg.Command == "exit" {
+	if msg.Extra == nil && msg.Command == "exit" {
 		return &HookState{Handled: false}
 	}
+	serviceID := msg.Extra.(*ControllerExtra).ServiceID
 	s.services[serviceID].Exec(msg.Command, msg.Params)
 	return &HookState{Handled: true}
 }
@@ -92,9 +95,11 @@ func (s *ServiceRouter) Forward(serviceID, command string, params ExecParams) {
 	msg := &ServiceMessage{
 		Command: command,
 		Params:  params,
-		Extra: &ControllerExtra{
+	}
+	if serviceID != "" {
+		msg.Extra = &ControllerExtra{
 			ServiceID: serviceID,
-		},
+		}
 	}
 	s.c.i.MainChan <- msg
 }
