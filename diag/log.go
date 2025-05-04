@@ -53,51 +53,81 @@ type Logger interface {
 type DefaultLogger struct {
 }
 
+// Print a message with Error level.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Error(err error, v ...interface{}) {
 	v2 := append([]interface{}{"ERROR ", err, " "}, v...)
 	log.Print(v2...)
 }
 
+// Print a message with Error level with format.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Errorf(err error, format string, v ...interface{}) {
 	v2 := append([]interface{}{"ERROR ", err}, v...)
 	log.Printf("%s%v "+format, v2...)
 }
 
+// Print a message with Warn level.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Warn(v ...interface{}) {
 	v2 := append([]interface{}{"WARN "}, v...)
 	log.Print(v2...)
 }
 
+// Print a message with Warn level with format.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Warnf(format string, v ...interface{}) {
 	v2 := append([]interface{}{"WARN "}, v...)
 	log.Printf("%s"+format, v2...)
 }
 
+// Print a message with Info level.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Info(v ...interface{}) {
 	v2 := append([]interface{}{"INFO "}, v...)
 	log.Print(v2...)
 }
 
+// Print a message with Info level with format.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Infof(format string, v ...interface{}) {
 	v2 := append([]interface{}{"INFO "}, v...)
 	log.Printf("%s"+format, v2...)
 }
 
+// Print a message with Debug level.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Debug(v ...interface{}) {
 	v2 := append([]interface{}{"DEBUG "}, v...)
 	log.Print(v2...)
 }
 
+// Print a message with Debug level with format.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Debugf(format string, v ...interface{}) {
 	v2 := append([]interface{}{"DEBUG "}, v...)
 	log.Printf("%s"+format, v2...)
 }
 
+// Print a message with Trace level.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Trace(v ...interface{}) {
 	v2 := append([]interface{}{"TRACE "}, v...)
 	log.Print(v2...)
 }
 
+// Print a message with Trace level with format.
+//
+// Available since v0.5.0
 func (l DefaultLogger) Tracef(format string, v ...interface{}) {
 	v2 := append([]interface{}{"TRACE "}, v...)
 	log.Printf("%s"+format, v2...)
