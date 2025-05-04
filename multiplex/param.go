@@ -29,7 +29,7 @@ type ServiceMessage struct {
 
 // Return parameter value if any, or fallback to def.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) GetParam(key string, def interface{}) interface{} {
 	if m.Params == nil {
 		return def
@@ -39,7 +39,7 @@ func (m *ServiceMessage) GetParam(key string, def interface{}) interface{} {
 
 // Set parameter with specified key.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) SetParam(key string, val interface{}) {
 	if m.Params == nil {
 		m.Params = make(ExecParams)
@@ -49,7 +49,7 @@ func (m *ServiceMessage) SetParam(key string, val interface{}) {
 
 // Delete parameter with specified key.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) DeleteParam(key string) {
 	if m.Params != nil {
 		m.Params.Delete(key)
@@ -58,7 +58,7 @@ func (m *ServiceMessage) DeleteParam(key string) {
 
 // Return Singal of the param.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) ReturnSignal() *sync.WaitGroup {
 	if m.Params != nil {
 		return m.Params.ReturnSignal()
@@ -68,7 +68,7 @@ func (m *ServiceMessage) ReturnSignal() *sync.WaitGroup {
 
 // Return Result of the param.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) ReturnResult() interface{} {
 	if m.Params != nil {
 		return m.Params.ReturnResult()
@@ -79,7 +79,7 @@ func (m *ServiceMessage) ReturnResult() interface{} {
 // Indicate that the request expect returning result.
 // This is for sender side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) ExpectReturn() {
 	if m.Params == nil {
 		m.Params = make(ExecParams)
@@ -90,7 +90,7 @@ func (m *ServiceMessage) ExpectReturn() {
 // Indicate that the request expect returning result using a custom signal.
 // This is for sender side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) ExpectReturnCustomSignal(signal *sync.WaitGroup) {
 	if m.Params == nil {
 		m.Params = make(ExecParams)
@@ -102,7 +102,7 @@ func (m *ServiceMessage) ExpectReturnCustomSignal(signal *sync.WaitGroup) {
 // Nothing will be done if the sender doesn't expect returns.
 // This is for recipient side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) Return(result interface{}) {
 	if m.Params != nil {
 		m.Params.Return(result)
@@ -113,7 +113,7 @@ func (m *ServiceMessage) Return(result interface{}) {
 // The routine won't be blocked and receive nil if it doesn't expect returns.
 // This is for sender side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (m *ServiceMessage) Wait() {
 	if m.Params != nil {
 		m.Params.Wait()
@@ -139,7 +139,7 @@ type ExecParams map[string]interface{}
 
 // Return parameter value if any, or fallback to def.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) Get(key string, def interface{}) interface{} {
 	if val, ok := p[key]; ok {
 		return val
@@ -163,7 +163,7 @@ func (p ExecParams) Delete(key string) {
 
 // Return Singal of the param.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) ReturnSignal() *sync.WaitGroup {
 	if p["return"] != nil {
 		ret := p.Get("return", nil).(*ReturnParams)
@@ -174,7 +174,7 @@ func (p ExecParams) ReturnSignal() *sync.WaitGroup {
 
 // Return Result of the param.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) ReturnResult() interface{} {
 	if p["return"] != nil {
 		ret := p.Get("return", nil).(*ReturnParams)
@@ -186,7 +186,7 @@ func (p ExecParams) ReturnResult() interface{} {
 // Indicate that the request expect returning result.
 // This is for sender side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) ExpectReturn() {
 	signal := new(sync.WaitGroup)
 	signal.Add(1)
@@ -196,7 +196,7 @@ func (p ExecParams) ExpectReturn() {
 // Indicate that the request expect returning result using a custom signal.
 // This is for sender side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) ExpectReturnCustomSignal(signal *sync.WaitGroup) {
 	p["return"] = &ReturnParams{
 		signal: signal,
@@ -207,7 +207,7 @@ func (p ExecParams) ExpectReturnCustomSignal(signal *sync.WaitGroup) {
 // Nothing will be done if the sender doesn't expect returns.
 // This is for recipient side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) Return(result interface{}) {
 	if p["return"] != nil {
 		ret := p.Get("return", nil).(*ReturnParams)
@@ -220,7 +220,7 @@ func (p ExecParams) Return(result interface{}) {
 // The routine won't be blocked and receive nil if it doesn't expect returns.
 // This is for sender side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) Wait() {
 	if p["return"] != nil {
 		ret := p.Get("return", nil).(*ReturnParams)
@@ -232,7 +232,7 @@ func (p ExecParams) Wait() {
 // The routine won't be blocked and receive nil if it doesn't expect returns.
 // This is for sender side.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (p ExecParams) WaitForReturn() interface{} {
 	if p["return"] != nil {
 		ret := p.Get("return", nil).(*ReturnParams)

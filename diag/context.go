@@ -18,7 +18,7 @@ import "time"
 
 // LogLevel indicates level of a log message.
 //
-// Available since vTBD
+// Available since v0.5.2
 type LogLevel int8
 
 const (
@@ -34,7 +34,7 @@ const (
 
 // LogContext is a struct to store raw log message.
 //
-// Available since vTBD
+// Available since v0.5.2
 type LogContext struct {
 	Time    time.Time
 	Level   LogLevel

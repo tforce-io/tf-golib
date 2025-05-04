@@ -15,6 +15,6 @@
 /*
 Package diag provides basic utilities for troubleshooting application.
 
-Available since vTBD
+Available since v0.5.0
 */
 package diag

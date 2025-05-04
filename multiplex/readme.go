@@ -16,6 +16,6 @@
 Package multiplex provides base service structure to enable concurrency processing
 using built-in Go routine.
 
-Available since vTBD
+Available since v0.5.0
 */
 package multiplex

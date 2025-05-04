@@ -23,14 +23,14 @@ import (
 
 // DebugLogger implement Logger interface that store log contents in a circular list.
 //
-// Available since vTBD
+// Available since v0.5.2
 type DebugLogger struct {
 	i *DebugLoggerInternal
 }
 
 // DebugLoggerInternal stores internal data of a DebugLogger.
 //
-// Available since vTBD
+// Available since v0.5.2
 type DebugLoggerInternal struct {
 	Cache *ring.Ring
 	LogMu *sync.Mutex
@@ -38,7 +38,7 @@ type DebugLoggerInternal struct {
 
 // Return new DebugLogger with maximum capacity for cache.
 //
-// Available since vTBD
+// Available since v0.5.2
 func NewDebugLogger(capacity int) *DebugLogger {
 	return &DebugLogger{
 		&DebugLoggerInternal{
@@ -50,7 +50,7 @@ func NewDebugLogger(capacity int) *DebugLogger {
 
 // Print a message with Error level.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Error(err error, v ...interface{}) {
 	v2 := append([]interface{}{"ERROR ", err, " "}, v...)
 	l.write(ErrorLevel, v2...)
@@ -59,7 +59,7 @@ func (l DebugLogger) Error(err error, v ...interface{}) {
 
 // Print a message with Error level with format.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Errorf(err error, format string, v ...interface{}) {
 	v2 := append([]interface{}{"ERROR ", err}, v...)
 	l.writef(ErrorLevel, "%s%v "+format, v2...)
@@ -67,7 +67,7 @@ func (l DebugLogger) Errorf(err error, format string, v ...interface{}) {
 
 // Print a message with Warn level.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Warn(v ...interface{}) {
 	v2 := append([]interface{}{"WARN "}, v...)
 	l.write(WarnLevel, v2...)
@@ -75,7 +75,7 @@ func (l DebugLogger) Warn(v ...interface{}) {
 
 // Print a message with Warn level with format.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Warnf(format string, v ...interface{}) {
 	v2 := append([]interface{}{"WARN "}, v...)
 	l.writef(WarnLevel, "%s"+format, v2...)
@@ -83,7 +83,7 @@ func (l DebugLogger) Warnf(format string, v ...interface{}) {
 
 // Print a message with Info level.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Info(v ...interface{}) {
 	v2 := append([]interface{}{"INFO "}, v...)
 	l.write(InfoLevel, v2...)
@@ -91,7 +91,7 @@ func (l DebugLogger) Info(v ...interface{}) {
 
 // Print a message with Info level with format.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Infof(format string, v ...interface{}) {
 	v2 := append([]interface{}{"INFO "}, v...)
 	l.writef(InfoLevel, "%s"+format, v2...)
@@ -99,7 +99,7 @@ func (l DebugLogger) Infof(format string, v ...interface{}) {
 
 // Print a message with Debug level.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Debug(v ...interface{}) {
 	v2 := append([]interface{}{"DEBUG "}, v...)
 	l.write(DebugLevel, v2...)
@@ -107,7 +107,7 @@ func (l DebugLogger) Debug(v ...interface{}) {
 
 // Print a message with Debug level with format.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Debugf(format string, v ...interface{}) {
 	v2 := append([]interface{}{"DEBUG "}, v...)
 	l.writef(DebugLevel, "%s"+format, v2...)
@@ -115,7 +115,7 @@ func (l DebugLogger) Debugf(format string, v ...interface{}) {
 
 // Print a message with Trace level.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Trace(v ...interface{}) {
 	v2 := append([]interface{}{"TRACE "}, v...)
 	l.write(TraceLevel, v2...)
@@ -123,7 +123,7 @@ func (l DebugLogger) Trace(v ...interface{}) {
 
 // Print a message with Trace level with format.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l DebugLogger) Tracef(format string, v ...interface{}) {
 	v2 := append([]interface{}{"TRACE "}, v...)
 	l.writef(TraceLevel, "%s"+format, v2...)
@@ -131,7 +131,7 @@ func (l DebugLogger) Tracef(format string, v ...interface{}) {
 
 // Return the context for last log message.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l *DebugLogger) Last() *LogContext {
 	l.i.LogMu.Lock()
 	defer l.i.LogMu.Unlock()
@@ -144,7 +144,7 @@ func (l *DebugLogger) Last() *LogContext {
 
 // Return the message for last log message.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l *DebugLogger) LastMessage() string {
 	last := l.Last()
 	if last == nil {
@@ -156,7 +156,7 @@ func (l *DebugLogger) LastMessage() string {
 
 // Return the context for all log messages in chronological order.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l *DebugLogger) All() []*LogContext {
 	l.i.LogMu.Lock()
 	defer l.i.LogMu.Unlock()
@@ -174,7 +174,7 @@ func (l *DebugLogger) All() []*LogContext {
 
 // Return the message for all log messages in chronological order.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l *DebugLogger) AllMessages() []string {
 	l.i.LogMu.Lock()
 	defer l.i.LogMu.Unlock()
@@ -192,7 +192,7 @@ func (l *DebugLogger) AllMessages() []string {
 
 // Return the context for all log messages in reverse chronological order.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l *DebugLogger) AllReverse() []*LogContext {
 	l.i.LogMu.Lock()
 	defer l.i.LogMu.Unlock()
@@ -210,7 +210,7 @@ func (l *DebugLogger) AllReverse() []*LogContext {
 
 // Return the message for all log messages in reverse chronological order.
 //
-// Available since vTBD
+// Available since v0.5.2
 func (l *DebugLogger) AllMessagesReverse() []string {
 	l.i.LogMu.Lock()
 	defer l.i.LogMu.Unlock()
