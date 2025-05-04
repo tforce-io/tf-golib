@@ -15,11 +15,14 @@
 package multiplex
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tforce-io/tf-golib/diag"
+	"github.com/tforce-io/tf-golib/random/securerng"
 )
 
 func TestServiceCore_ServiceID(t *testing.T) {
@@ -56,7 +59,7 @@ func TestServiceCore_Exec(t *testing.T) {
 		"message": "Hello, World!",
 	})
 	time.Sleep(10 * time.Millisecond)
-	assert.Equal(t, "INFO Message received: Hello, World!", logger.LastMessage(), "invalid message")
+	assert.Equal(t, "INFO Echo#1: Message received: Hello, World!", logger.LastMessage(), "invalid message")
 }
 
 type EchoService struct {
@@ -72,7 +75,39 @@ func NewEchoService(logger diag.Logger) *EchoService {
 
 func (s *EchoService) coreProcessHook(workerID uint64, msg *ServiceMessage) *HookState {
 	message := msg.Params["message"].(string)
-	s.i.Logger.Infof("Message received: %s", message)
+	s.i.Logger.Infof("%s#%d: Message received: %s", s.i.ServiceID, workerID, message)
+	return &HookState{Handled: true}
+}
+
+type HashService struct {
+	ServiceCore
+	i *ServiceCoreInternal
+}
+
+func NewHashService(logger diag.Logger) *HashService {
+	svc := &HashService{}
+	svc.i = svc.InitServiceCore("Hash", logger, svc.coreProcessHook)
+	return svc
+}
+
+func (s *HashService) coreProcessHook(workerID uint64, msg *ServiceMessage) *HookState {
+	switch msg.Command {
+	case "sha256":
+		message := msg.Params["input"].(string)
+		messageBuf := []byte(message)
+		hashBuf := sha256.Sum256(messageBuf)
+		hash := hex.EncodeToString(hashBuf[:])
+		s.i.Logger.Infof("%s#%d: Value hashed: %s.", s.i.ServiceID, workerID, hash)
+	case "sha256_random":
+		randomParams := ExecParams{}
+		randomParams.ExpectReturn()
+		s.Dispatch("Random", "", randomParams)
+		message := randomParams.WaitForReturn().(string)
+		messageBuf := []byte(message)
+		hashBuf := sha256.Sum256(messageBuf)
+		hash := hex.EncodeToString(hashBuf[:])
+		s.i.Logger.Infof("%s#%d: Value hashed: %s.", s.i.ServiceID, workerID, hash)
+	}
 	return &HookState{Handled: true}
 }
 
@@ -88,5 +123,26 @@ func NewRandomService(logger diag.Logger) *RandomService {
 }
 
 func (s *RandomService) coreProcessHook(workerID uint64, msg *ServiceMessage) *HookState {
+	hex := securerng.Hex(16)
+	msg.Return(hex)
+	s.i.Logger.Infof("%s#%d: Value randomed: %s.", s.i.ServiceID, workerID, hex)
+	return &HookState{Handled: true}
+}
+
+type ShutdownService struct {
+	ServiceCore
+	i *ServiceCoreInternal
+}
+
+func NewShutdownService(logger diag.Logger) *ShutdownService {
+	svc := &ShutdownService{}
+	svc.i = svc.InitServiceCore("Shutdown", logger, svc.coreProcessHook)
+	return svc
+}
+
+func (s *ShutdownService) coreProcessHook(workerID uint64, msg *ServiceMessage) *HookState {
+	timeout := msg.GetParam("timeout", int64(100*time.Millisecond)).(int64)
+	time.Sleep(time.Duration(timeout))
+	s.Dispatch("", "exit", ExecParams{})
 	return &HookState{Handled: true}
 }

@@ -27,6 +27,111 @@ type ServiceMessage struct {
 	Extra   interface{}
 }
 
+// Return parameter value if any, or fallback to def.
+//
+// Available since vTBD
+func (m *ServiceMessage) GetParam(key string, def interface{}) interface{} {
+	if m.Params == nil {
+		return def
+	}
+	return m.Params.Get(key, def)
+}
+
+// Set parameter with specified key.
+//
+// Available since vTBD
+func (m *ServiceMessage) SetParam(key string, val interface{}) {
+	if m.Params == nil {
+		m.Params = make(ExecParams)
+	}
+	m.Params.Set(key, val)
+}
+
+// Delete parameter with specified key.
+//
+// Available since vTBD
+func (m *ServiceMessage) DeleteParam(key string) {
+	if m.Params != nil {
+		m.Params.Delete(key)
+	}
+}
+
+// Return Singal of the param.
+//
+// Available since vTBD
+func (m *ServiceMessage) ReturnSignal() *sync.WaitGroup {
+	if m.Params != nil {
+		return m.Params.ReturnSignal()
+	}
+	return nil
+}
+
+// Return Result of the param.
+//
+// Available since vTBD
+func (m *ServiceMessage) ReturnResult() interface{} {
+	if m.Params != nil {
+		return m.Params.ReturnResult()
+	}
+	return nil
+}
+
+// Indicate that the request expect returning result.
+// This is for sender side.
+//
+// Available since vTBD
+func (m *ServiceMessage) ExpectReturn() {
+	if m.Params == nil {
+		m.Params = make(ExecParams)
+	}
+	m.Params.ExpectReturn()
+}
+
+// Indicate that the request expect returning result using a custom signal.
+// This is for sender side.
+//
+// Available since vTBD
+func (m *ServiceMessage) ExpectReturnCustomSignal(signal *sync.WaitGroup) {
+	if m.Params == nil {
+		m.Params = make(ExecParams)
+	}
+	m.Params.ExpectReturnCustomSignal(signal)
+}
+
+// Set the returning result then signal listener that the request has been completed.
+// Nothing will be done if the sender doesn't expect returns.
+// This is for recipient side.
+//
+// Available since vTBD
+func (m *ServiceMessage) Return(result interface{}) {
+	if m.Params != nil {
+		m.Params.Return(result)
+	}
+}
+
+// Listen to the signal.
+// The routine won't be blocked and receive nil if it doesn't expect returns.
+// This is for sender side.
+//
+// Available since vTBD
+func (m *ServiceMessage) Wait() {
+	if m.Params != nil {
+		m.Params.Wait()
+	}
+}
+
+// Listen to the signal and return received result.
+// The routine won't be blocked and receive nil if it doesn't expect returns.
+// This is for sender side.
+//
+// Available since v0.5.0
+func (m *ServiceMessage) WaitForReturn() interface{} {
+	if m.Params != nil {
+		return m.Params.WaitForReturn()
+	}
+	return nil
+}
+
 // Collection of parameters as key-value mapping.
 //
 // Available since v0.5.0
@@ -54,6 +159,28 @@ func (p ExecParams) Set(key string, val interface{}) {
 // Available since v0.5.0
 func (p ExecParams) Delete(key string) {
 	delete(p, key)
+}
+
+// Return Singal of the param.
+//
+// Available since vTBD
+func (p ExecParams) ReturnSignal() *sync.WaitGroup {
+	if p["return"] != nil {
+		ret := p.Get("return", nil).(*ReturnParams)
+		return ret.signal
+	}
+	return nil
+}
+
+// Return Result of the param.
+//
+// Available since vTBD
+func (p ExecParams) ReturnResult() interface{} {
+	if p["return"] != nil {
+		ret := p.Get("return", nil).(*ReturnParams)
+		return ret.result
+	}
+	return nil
 }
 
 // Indicate that the request expect returning result.

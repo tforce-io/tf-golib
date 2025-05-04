@@ -52,7 +52,6 @@ func TestServiceController_Unregister(t *testing.T) {
 func TestServiceController_Run_Background(t *testing.T) {
 	logger := diag.NewDebugLogger(10)
 	svc := NewServiceController(logger)
-	svc.SetWorker(1)
 	go func() {
 		time.Sleep(100 * time.Millisecond)
 		svc.Exec("exit", ExecParams{})
@@ -65,7 +64,6 @@ func TestServiceController_Run_Background(t *testing.T) {
 func TestServiceController_Dispatch(t *testing.T) {
 	logger := diag.NewDebugLogger(10)
 	svc := NewServiceController(logger)
-	svc.SetWorker(1)
 	logger2 := diag.NewDebugLogger(10)
 	echo := NewEchoService(logger2)
 	echo.SetWorker(1)
@@ -79,5 +77,31 @@ func TestServiceController_Dispatch(t *testing.T) {
 	svc.Run(true)
 	time.Sleep(100 * time.Millisecond)
 	assert.Equal(t, "INFO Controller#1: Process exited.", logger.LastMessage(), "routine not exited properly")
-	assert.Equal(t, "INFO Message received: Hello, World!", logger2.LastMessage(), "message is not dispatched properly")
+	assert.Equal(t, "INFO Echo#1: Message received: Hello, World!", logger2.LastMessage(), "message is not dispatched properly")
+}
+
+func TestServiceController_Integration(t *testing.T) {
+	logger := diag.NewDebugLogger(10)
+	svc := NewServiceController(logger)
+	logger2 := diag.NewDebugLogger(10)
+	hash := NewHashService(logger2)
+	hash.SetWorker(1)
+	hash.SetRouter(svc)
+	svc.Register(hash)
+	logger3 := diag.NewDebugLogger(10)
+	random := NewRandomService(logger3)
+	random.SetWorker(1)
+	random.SetRouter(svc)
+	svc.Register(random)
+	logger4 := diag.NewDebugLogger(10)
+	shutdown := NewShutdownService(logger4)
+	shutdown.SetWorker(1)
+	shutdown.SetRouter(svc)
+	svc.Register(shutdown)
+	svc.Dispatch("Hash", "sha256_random", ExecParams{})
+	svc.Dispatch("Shutdown", "", ExecParams{})
+	svc.Run(true)
+	assert.Equal(t, "INFO Controller#1: Process exited.", logger.LastMessage(), "routine not exited properly")
+	assert.Contains(t, logger2.LastMessage(), "INFO Hash#1: Value hashed: ", "invalid message")
+	assert.Contains(t, logger3.LastMessage(), "INFO Random#1: Value randomed:", "invalid message")
 }
