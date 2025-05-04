@@ -70,26 +70,6 @@ type ServiceCore struct {
 	i *ServiceCoreInternal
 }
 
-// Init ServiceCore internal and return the reference for later access.
-//
-// Available since v0.5.0
-func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, processHook func(workerID uint64, msg *ServiceMessage) *HookState) *ServiceCoreInternal {
-	if s.i != nil {
-		return s.i
-	}
-	s.i = &ServiceCoreInternal{
-		ServiceID:     serviceID,
-		MainChan:      make(chan *ServiceMessage, MainChainCapacity),
-		ExitChan:      make(chan bool, ExtraChanCapacity),
-		WorkerCounter: &Uint64ThreadSafe{},
-
-		Logger: logger,
-
-		CoreProcessHook: processHook,
-	}
-	return s.i
-}
-
 // ServiceCoreInternal stores internal data of a ServiceCore.
 //
 // Available since v0.5.0
@@ -108,6 +88,26 @@ type ServiceCoreInternal struct {
 	Logger diag.Logger
 
 	CoreProcessHook func(workerID uint64, msg *ServiceMessage) *HookState
+}
+
+// Init ServiceCore internal and return the reference for later access.
+//
+// Available since v0.5.0
+func (s *ServiceCore) InitServiceCore(serviceID string, logger diag.Logger, processHook func(workerID uint64, msg *ServiceMessage) *HookState) *ServiceCoreInternal {
+	if s.i != nil {
+		return s.i
+	}
+	s.i = &ServiceCoreInternal{
+		ServiceID:     serviceID,
+		MainChan:      make(chan *ServiceMessage, MainChainCapacity),
+		ExitChan:      make(chan bool, ExtraChanCapacity),
+		WorkerCounter: &Uint64ThreadSafe{},
+
+		Logger: logger,
+
+		CoreProcessHook: processHook,
+	}
+	return s.i
 }
 
 // Return Service Identifier string.
