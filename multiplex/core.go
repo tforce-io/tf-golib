@@ -128,7 +128,7 @@ func (s ServiceCore) Router() *ServiceRouter {
 //
 // Available since v0.5.0
 func (s ServiceCore) SetRouter(controller *ServiceController) {
-	s.i.Router = controller.router
+	s.i.Router = controller.i.Router
 }
 
 // Set number of Process routines the service should use to handle requests.
@@ -188,7 +188,7 @@ func (s ServiceCore) Dispatch(serviceID string, command string, params ExecParam
 // Available since v0.5.0
 func (s ServiceCore) process(workerID uint64) {
 	s.i.WorkerCounter.Add(1)
-	s.i.Logger.Infof("%s#%d Process started.", s.i.ServiceID, workerID)
+	s.i.Logger.Infof("%s#%d: Process started.", s.i.ServiceID, workerID)
 	status := InitState
 	for status != ExitState {
 		msg := <-s.i.MainChan
@@ -204,7 +204,7 @@ func (s ServiceCore) process(workerID uint64) {
 		}
 	}
 	s.i.WorkerCounter.Sub(1)
-	s.i.Logger.Infof("%s#%d Process exited.", s.i.ServiceID, workerID)
+	s.i.Logger.Infof("%s#%d: Process exited.", s.i.ServiceID, workerID)
 	if s.i.Background {
 		s.i.ExitChan <- true
 	}

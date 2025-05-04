@@ -43,6 +43,9 @@ func TestServiceCore_Worker(t *testing.T) {
 	assert.Equal(t, uint64(0), svc.WorkerCount(), "mismatch worker count")
 	svc.SetWorker(17)
 	assert.Equal(t, uint64(17), svc.WorkerCount(), "mismatch worker count")
+	time.Sleep(100 * time.Millisecond)
+	svc.SetWorker(10)
+	assert.Equal(t, uint64(10), svc.WorkerCount(), "mismatch worker count")
 }
 
 func TestServiceCore_Exec(t *testing.T) {
