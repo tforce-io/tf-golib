@@ -6,6 +6,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestAbsFloat32(t *testing.T) {
+	tests := []struct {
+		name     string
+		x        float32
+		expected float32
+	}{
+		{"positive_value", 5.5, 5.5},
+		{"negative_value", -5.5, 5.5},
+		{"zero_value", 0, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := AbsFloat32(tt.x)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestMinFloat32(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -41,6 +59,24 @@ func TestMaxFloat32(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := MaxFloat32(tt.x, tt.y...)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestAbsFloat64(t *testing.T) {
+	tests := []struct {
+		name     string
+		x        float64
+		expected float64
+	}{
+		{"positive_value", 5.5, 5.5},
+		{"negative_value", -5.5, 5.5},
+		{"zero_value", 0, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := AbsFloat64(tt.x)
 			assert.Equal(t, tt.expected, result)
 		})
 	}

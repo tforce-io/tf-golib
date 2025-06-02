@@ -6,6 +6,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestAbsInt(t *testing.T) {
+	tests := []struct {
+		name     string
+		x        int
+		expected int
+	}{
+		{"positive_value", 5, 5},
+		{"negative_value", -5, 5},
+		{"zero_value", 0, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := AbsInt(tt.x)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestMinInt(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -39,6 +57,24 @@ func TestMaxInt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := MaxInt(tt.x, tt.y...)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestAbsInt8(t *testing.T) {
+	tests := []struct {
+		name     string
+		x        int8
+		expected int8
+	}{
+		{"positive_value", 5, 5},
+		{"negative_value", -5, 5},
+		{"zero_value", 0, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := AbsInt8(tt.x)
 			assert.Equal(t, tt.expected, result)
 		})
 	}
@@ -82,6 +118,24 @@ func TestMaxInt8(t *testing.T) {
 	}
 }
 
+func TestAbsInt16(t *testing.T) {
+	tests := []struct {
+		name     string
+		x        int16
+		expected int16
+	}{
+		{"positive_value", 5, 5},
+		{"negative_value", -5, 5},
+		{"zero_value", 0, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := AbsInt16(tt.x)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestMinInt16(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -120,6 +174,24 @@ func TestMaxInt16(t *testing.T) {
 	}
 }
 
+func TestAbsInt32(t *testing.T) {
+	tests := []struct {
+		name     string
+		x        int32
+		expected int32
+	}{
+		{"positive_value", 5, 5},
+		{"negative_value", -5, 5},
+		{"zero_value", 0, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := AbsInt32(tt.x)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
 func TestMinInt32(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -153,6 +225,24 @@ func TestMaxInt32(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := MaxInt32(tt.x, tt.y...)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestAbsInt64(t *testing.T) {
+	tests := []struct {
+		name     string
+		x        int64
+		expected int64
+	}{
+		{"positive_value", 5, 5},
+		{"negative_value", -5, 5},
+		{"zero_value", 0, 0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := AbsInt64(tt.x)
 			assert.Equal(t, tt.expected, result)
 		})
 	}

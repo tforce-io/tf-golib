@@ -1,6 +1,15 @@
 package mathxt
 
+import "math"
+
 /* --- FLOAT32 --- */
+
+// Return the absolute value of x.
+//
+// Available since vTBD
+func AbsFloat32(x float32) float32 {
+	return float32(math.Abs(float64(x)))
+}
 
 // Returns the smaller of x or y for float32.
 //
@@ -29,6 +38,13 @@ func MaxFloat32(x float32, y ...float32) float32 {
 }
 
 /* --- FLOAT64 --- */
+
+// Return the absolute value of x.
+//
+// Available since vTBD
+func AbsFloat64(x float64) float64 {
+	return math.Abs(x)
+}
 
 // Returns the smaller of x or y for float64.
 //
