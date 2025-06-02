@@ -2,9 +2,9 @@ package mathxt
 
 /* --- INT --- */
 
-// Return the absolute value of x.
+// Return the absolute value of x for int.
 //
-// Available since vTBD
+// Available since v0.6.0
 func AbsInt(x int) int {
 	if x < 0 {
 		return -x
@@ -12,9 +12,9 @@ func AbsInt(x int) int {
 	return x
 }
 
-// Returns the smaller of x or y for int.
+// Return the smaller of x or y for int.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MinInt(x int, y ...int) int {
 	min := x
 	for _, v := range y {
@@ -25,9 +25,9 @@ func MinInt(x int, y ...int) int {
 	return min
 }
 
-// Returns the larger of x or y for int.
+// Return the larger of x or y for int.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MaxInt(x int, y ...int) int {
 	max := x
 	for _, v := range y {
@@ -40,9 +40,9 @@ func MaxInt(x int, y ...int) int {
 
 /* --- INT8 --- */
 
-// Return the absolute value of x.
+// Return the absolute value of x for int8.
 //
-// Available since vTBD
+// Available since v0.6.0
 func AbsInt8(x int8) int8 {
 	if x < 0 {
 		return -x
@@ -50,9 +50,9 @@ func AbsInt8(x int8) int8 {
 	return x
 }
 
-// Returns the smaller of x or y for int8.
+// Return the smaller of x or y for int8.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MinInt8(x int8, y ...int8) int8 {
 	min := x
 	for _, v := range y {
@@ -63,9 +63,9 @@ func MinInt8(x int8, y ...int8) int8 {
 	return min
 }
 
-// Returns the larger of x or y for int8.
+// Return the larger of x or y for int8.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MaxInt8(x int8, y ...int8) int8 {
 	max := x
 	for _, v := range y {
@@ -78,9 +78,9 @@ func MaxInt8(x int8, y ...int8) int8 {
 
 /* --- INT16 --- */
 
-// Return the absolute value of x.
+// Return the absolute value of x for int16.
 //
-// Available since vTBD
+// Available since v0.6.0
 func AbsInt16(x int16) int16 {
 	if x < 0 {
 		return -x
@@ -88,9 +88,9 @@ func AbsInt16(x int16) int16 {
 	return x
 }
 
-// Returns the smaller of x or y for int16.
+// Return the smaller of x or y for int16.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MinInt16(x int16, y ...int16) int16 {
 	min := x
 	for _, v := range y {
@@ -101,9 +101,9 @@ func MinInt16(x int16, y ...int16) int16 {
 	return min
 }
 
-// Returns the larger of x or y for int16.
+// Return the larger of x or y for int16.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MaxInt16(x int16, y ...int16) int16 {
 	max := x
 	for _, v := range y {
@@ -116,9 +116,9 @@ func MaxInt16(x int16, y ...int16) int16 {
 
 /* --- INT32 --- */
 
-// Return the absolute value of x.
+// Return the absolute value of x for int32.
 //
-// Available since vTBD
+// Available since v0.6.0
 func AbsInt32(x int32) int32 {
 	if x < 0 {
 		return -x
@@ -126,9 +126,9 @@ func AbsInt32(x int32) int32 {
 	return x
 }
 
-// Returns the smaller of x or y for int32.
+// Return the smaller of x or y for int32.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MinInt32(x int32, y ...int32) int32 {
 	min := x
 	for _, v := range y {
@@ -139,9 +139,9 @@ func MinInt32(x int32, y ...int32) int32 {
 	return min
 }
 
-// Returns the larger of x or y for int32.
+// Return the larger of x or y for int32.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MaxInt32(x int32, y ...int32) int32 {
 	max := x
 	for _, v := range y {
@@ -154,9 +154,9 @@ func MaxInt32(x int32, y ...int32) int32 {
 
 /* --- INT64 --- */
 
-// Return the absolute value of x.
+// Return the absolute value of x for int64.
 //
-// Available since vTBD
+// Available since v0.6.0
 func AbsInt64(x int64) int64 {
 	if x < 0 {
 		return -x
@@ -164,9 +164,9 @@ func AbsInt64(x int64) int64 {
 	return x
 }
 
-// Returns the smaller of x or y for int64.
+// Return the smaller of x or y for int64.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MinInt64(x int64, y ...int64) int64 {
 	min := x
 	for _, v := range y {
@@ -177,9 +177,9 @@ func MinInt64(x int64, y ...int64) int64 {
 	return min
 }
 
-// Returns the larger of x or y for int64.
+// Return the larger of x or y for int64.
 //
-// Available since vTBD
+// Available since v0.6.0
 func MaxInt64(x int64, y ...int64) int64 {
 	max := x
 	for _, v := range y {
