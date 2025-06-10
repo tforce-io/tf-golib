@@ -8,6 +8,10 @@ Back in the time I was a C# developer, the .NET Framework provided many helper f
 
 To continue with momentum of application development we used to have in the past, I decided to make it happens in Go. I'm not sure that this library will be a unique idea, but I do hope that it can help other developers makes their application faster.
 
+### 2025 Update: TF GoLib will change to MIT license since v0.7.0.
+
+After some time spending efforts into this project. We found out that many greater projects even have MIT license, there is not any reason for TF GoLib to keep Apache-2.0. This is will make the license story less complicated for anyone who want to adopt TF GoLib into their projects.
+
 ## License
 
-TF GoLib is licensed under Apache-2.0 license. See LICENSE file for more details.
+TF GoLib is licensed under MIT license. See LICENSE file for more details.
