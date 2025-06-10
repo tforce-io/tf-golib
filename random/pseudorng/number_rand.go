@@ -1,16 +1,8 @@
 // Copyright (C) 2025 T-Force I/O
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// 	http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// TF GoLib is licensed under the MIT license.
+// You should receive a copy of MIT along with this software.
+// If not, see <https://opensource.org/license/mit>
 
 package pseudorng
 
@@ -191,6 +183,7 @@ func Float64() float64 {
 // adjust the output using:
 //
 //	sample = NormFloat64() * desiredStdDev + desiredMean
+//
 // Available since v0.3.0
 func NormFloat64() float64 {
 	return rand.NormFloat64()
@@ -201,7 +194,8 @@ func NormFloat64() float64 {
 // from the default [Source].
 // The custom distribution method is taken from Golang std library:
 //
-//  result = NormFloat64() * stddev + mean
+//	result = NormFloat64() * stddev + mean
+//
 // Available since v0.3.0
 func NormFloat64n(stddev, mean float64) float64 {
 	return rand.NormFloat64()*stddev + mean
@@ -214,6 +208,7 @@ func NormFloat64n(stddev, mean float64) float64 {
 // callers can adjust the output using:
 //
 //	sample = ExpFloat64() / desiredRateParameter
+//
 // Available since v0.3.0
 func ExpFloat64() float64 {
 	return rand.ExpFloat64()
@@ -225,6 +220,7 @@ func ExpFloat64() float64 {
 // The custom distribution method is taken from Golang std library:
 //
 //	result = ExpFloat64() / lamda
+//
 // Available since v0.3.0
 func ExpFloat64n(lamda float64) float64 {
 	return rand.ExpFloat64() / lamda

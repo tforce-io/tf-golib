@@ -5,8 +5,7 @@
 // If not, see <https://opensource.org/license/mit>
 
 /*
-Package stringxt implements helper functions specialized for string
-that are not provided by Go lang standard libraries.
-Available since v0.3.0
+Package mathxt provides math functions for built-in data types other than float64.
+Available since v0.6.0
 */
-package stringxt
+package mathxt
