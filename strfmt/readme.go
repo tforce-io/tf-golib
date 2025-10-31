@@ -7,6 +7,7 @@
 /*
 Package strfmt provides common structs for popular structured string in computing
 such as URL, file path, connection string,...
+
 Available since v0.2.0
 */
 package strfmt
