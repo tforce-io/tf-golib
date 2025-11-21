@@ -10,6 +10,20 @@ import (
 	"math/big"
 )
 
+var (
+	BigIntN1  = big.NewInt(-1)
+	BigInt0   = big.NewInt(0)
+	BigInt1   = big.NewInt(1)
+	BigInt2   = big.NewInt(2)
+	BigInt3   = big.NewInt(3)
+	BigInt4   = big.NewInt(4)
+	BigInt7   = big.NewInt(7)
+	BigInt16  = big.NewInt(16)
+	BigInt32  = big.NewInt(32)
+	BigInt64  = big.NewInt(64)
+	BigInt255 = big.NewInt(255)
+)
+
 // A Uint256 is wrapped *big.Int to intergrate with system that use large number
 // and provide fluent apis for type casting.
 //
@@ -26,6 +40,13 @@ func (s *Uint256) BigInt() *big.Int {
 // Available since v0.1.0
 func (s *Uint256) Value() *big.Int {
 	return (*big.Int)(s)
+}
+
+// Compare that two big.Int a == b
+//
+// Available since v0.9.0
+func BigIntEqual(a, b *big.Int) bool {
+	return a.Cmp(b) == 0
 }
 
 // Parse a string into big.Int. Decimal doesn't have prefix. Hexadecimal, Binary,
@@ -53,4 +74,32 @@ func BigIntFromString(s string) (*big.Int, bool) {
 		bigint, ok = new(big.Int).SetString(s, 10)
 	}
 	return bigint, ok
+}
+
+// Compare that two big.Int a > b
+//
+// Available since v0.9.0
+func BigIntGreatorThan(a, b *big.Int) bool {
+	return a.Cmp(b) > 0
+}
+
+// Compare that two big.Int a >= b
+//
+// Available since v0.9.0
+func BigIntGreatorThanEqual(a, b *big.Int) bool {
+	return a.Cmp(b) >= 0
+}
+
+// Compare that two big.Int a < b
+//
+// Available since v0.9.0
+func BigIntLessThan(a, b *big.Int) bool {
+	return a.Cmp(b) < 0
+}
+
+// Compare that two big.Int a <= b
+//
+// Available since v0.9.0
+func BigIntLessThanEqual(a, b *big.Int) bool {
+	return a.Cmp(b) <= 0
 }
